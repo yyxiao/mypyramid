@@ -1,0 +1,3 @@
+[run]
+source = hyjj
+omit = hyjj/test*
