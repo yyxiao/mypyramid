@@ -6,6 +6,8 @@ __mtime__ = 2016/10/13
 """
 
 import redis
+import random
+import string
 from ..models.model import CustomerSms
 from ..common.constant import STATE_INVALID, STATE_VALID, TIMEOUT_CODE
 
@@ -30,3 +32,9 @@ def add_code_redis(phone, code, redis_host):
     r.set(phone, code)
     # 设置过期失效时间
     r.expire(phone, TIMEOUT_CODE)
+
+
+def make_random(length):
+    rand_list = [random.choice(string.digits) for i in range(length)]
+    random_code = ''.join([i for i in rand_list])
+    return random_code
