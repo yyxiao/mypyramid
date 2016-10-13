@@ -18,6 +18,7 @@ def send_code(request):
     :param request:
     :return:
     """
+    error_msg = ''
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
     user_phone = request.POST.get('phone', '')
@@ -29,7 +30,8 @@ def send_code(request):
         error_msg = '用户姓名不能为空！'
     if not error_msg:
         code = make_random(6)
-        send(user_phone, content % (user_name, code))
+        content = content % (user_name, code)
+        send(user_phone, content)
         redis_host = request.registry.settings['redis.sessions.host']
         add_code_redis(user_phone, code, redis_host)
         error_msg = add_sms(dbs, sms_content=content, phone=user_phone, create_user=user_id)
