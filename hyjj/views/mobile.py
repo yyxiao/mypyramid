@@ -6,7 +6,7 @@ __mtime__ = 2016/10/13
 """
 
 from pyramid.view import view_config
-from ..service.sendsms_service import add_sms, add_code_redis
+from ..service.sendsms_service import add_sms, add_code_redis, make_random
 from ..common.sendsms import send
 from ..common.constant import CODE_ERROR, CODE_SUCCESS, CODE_WRONG
 
@@ -20,7 +20,7 @@ def send_code(request):
     """
     dbs = request.dbsession
     user_id = request.POST.get('user_id', '')
-    user_phone = request.POST.get('phone', 0)
+    user_phone = request.POST.get('phone', '')
     user_name = request.POST.get('name', '')
     content = '尊敬的%s先生，您好，您网上交易重置登录密码验证码为%s，请在三分钟内输入该有效验证码'
     if not user_phone:
@@ -28,7 +28,10 @@ def send_code(request):
     elif not user_name:
         error_msg = '用户姓名不能为空！'
     if not error_msg:
-        send(user_phone, content % (user_name, '111111'))
+        code = make_random(6)
+        send(user_phone, content % (user_name, code))
+        redis_host = request.registry.settings['redis.sessions.host']
+        add_code_redis(user_phone, code, redis_host)
         error_msg = add_sms(dbs, sms_content=content, phone=user_phone, create_user=user_id)
     if error_msg:
         json_a = {
@@ -47,4 +50,4 @@ def send_code(request):
 def send_test(request):
     redis_host = request.registry.settings['redis.sessions.host']
     add_code_redis(15800786806, 201293, redis_host)
-    add_code_redis(15800786807, 201294, redis_host)
+    # add_code_redis(15800786807, 201294, redis_host)
