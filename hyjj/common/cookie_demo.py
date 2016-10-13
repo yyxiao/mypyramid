@@ -44,4 +44,4 @@ expires=datetime.datetime(2012,4,9,18,30,14)+time_to_live
 expires_at_time=expires.strftime('%a,%d %b %Y %H:%M:%S')
 c['expires_at_time']['expires']=expires_at_time
 
-show_cookie(c)
+# show_cookie(c)
