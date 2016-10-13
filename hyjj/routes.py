@@ -5,4 +5,5 @@ def includeme(config):
 
 
 def http_include(config):
-    config.add_route('sendSms', '/sendSms')
+    config.add_route('sendCode', '/sendCode')
+    config.add_route('test123', '/test123')

@@ -11,7 +11,7 @@ import urllib.request
 from ..common.constant import SEND_PWD, SEND_URL
 
 
-def send_sms(phone, content):
+def send(phone, content):
     # 密钥
     data = {
         'Account': 3,
