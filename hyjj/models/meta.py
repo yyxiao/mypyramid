@@ -11,6 +11,8 @@ NAMING_CONVENTION = {
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     "pk": "pk_%(table_name)s"
 }
+# 数据库 schema
+HYJJ_SCHEMA = 'public'
 
-metadata = MetaData(naming_convention=NAMING_CONVENTION)
+metadata = MetaData(schema=HYJJ_SCHEMA, naming_convention=NAMING_CONVENTION)
 Base = declarative_base(metadata=metadata)
