@@ -4,7 +4,8 @@
 __author__ = xyy
 __mtime__ = 2016/10/13
 """
-
+import redis
+import string
 from pyramid.view import view_config
 from datetime import datetime
 from ..service.sendsms_service import add_sms, add_code_redis, make_random
@@ -56,6 +57,9 @@ def send_code(request):
 @view_config(route_name='test', renderer='json')
 def send_test(request):
     redis_host = request.registry.settings['redis.sessions.host']
+    pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
+    r = redis.StrictRedis(connection_pool=pool)
+    r.set(ip, num)
     date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
     date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
     date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
