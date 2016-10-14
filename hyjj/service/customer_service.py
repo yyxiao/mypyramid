@@ -9,7 +9,7 @@ from ..models.model import CustomerInfo
 from ..common.constant import STATE_INVALID, STATE_VALID
 
 
-class Customer():
+class CustomerService:
 
     def add_customer(self, dbs, cust_id, indiinst_flag, openid, cust_name, phone, risk_level, risk_expi_date, create_user='xyy'):
         msg = ''
