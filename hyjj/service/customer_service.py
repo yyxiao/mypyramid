@@ -11,7 +11,8 @@ from ..common.constant import STATE_INVALID, STATE_VALID
 
 class CustomerService:
 
-    def add_customer(self, dbs, cust_id, indiinst_flag, openid, cust_name, phone, risk_level, risk_expi_date, create_user='xyy'):
+    @staticmethod
+    def add_customer(dbs, cust_id, indiinst_flag, openid, cust_name, phone, risk_level, risk_expi_date, create_user='xyy'):
         msg = ''
         try:
             customer = CustomerInfo()
@@ -25,8 +26,7 @@ class CustomerService:
             customer.create_user = create_user
             customer.state = STATE_VALID
             dbs.add(customer)
-            self.HyLog.log_info('新增短信发送记录失败，请核对后重试')
+            dbs.flush()
         except Exception as e:
             msg = '新增短信发送记录失败，请核对后重试'
-            self.HyLog.log_error(e + msg)
         return msg

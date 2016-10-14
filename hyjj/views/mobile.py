@@ -5,13 +5,11 @@ __author__ = xyy
 __mtime__ = 2016/10/13
 """
 import redis
-import string
 from pyramid.view import view_config
 from datetime import datetime
 from ..service.sendsms_service import *
 from ..common.sendsms import send
 from ..common import constant
-from ..common.loguntil import HyLog
 from ..common.jsonutils import other_response
 from ..common.redisutil import create_redis
 from ..common.base import BaseUtil
@@ -56,7 +54,7 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': ''
             }
-        HyLog.log_in(self.request.client_addr, '', ('sendCode failed ' + error_msg if error_msg else 'sendCode success'),
+        self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' + error_msg if error_msg else 'sendCode success'),
                      'mobile')
         resp = other_response(json_a=json_a)
         return resp
@@ -69,8 +67,8 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
-        error_code = constant.CODE_ERROR
         dbs = self.request.dbsession
+        error_code = constant.CODE_ERROR
         user_phone = self.request.POST.get('phone', '')
         user_name = self.request.POST.get('name', '')
         verification_code = self.request.POST.get('verificationCode', '')
@@ -93,7 +91,7 @@ class MobileView(BaseUtil):
                 error_msg = '验证码有误请重新输入！'
                 error_code = constant.CODE_WRONG
             else:
-                self.customerService.add_customer(self, openid='231d')
+                self.customerService.add_customer(dbs, cust_id='a', openid=wechat_id, indiinst_flag='a', cust_name='b')
         if error_msg:
             json_a = {
                 'returnCode': error_code,
@@ -106,8 +104,8 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'isRiskAssess': is_risk
             }
-        HyLog.log_in(self.request.client_addr, '', ('accountBinding failed ' + error_msg if error_msg
-                                               else 'sendCode success'), 'mobile')
+        self.hyLog.log_in(self.request.client_addr, '', ('accountBinding failed ' + error_msg if error_msg
+                                                         else 'sendCode success'), 'mobile')
         resp = other_response(json_a=json_a)
         return resp
 
