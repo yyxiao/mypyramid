@@ -6,4 +6,5 @@ def includeme(config):
 
 def http_include(config):
     config.add_route('sendCode', '/sendCode')
-    config.add_route('test123', '/test123')
+    config.add_route('accountBinding', '/accountBinding')
+    config.add_route('test', '/test')

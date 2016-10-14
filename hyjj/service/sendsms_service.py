@@ -12,7 +12,7 @@ from ..models.model import CustomerSms
 from ..common.constant import STATE_INVALID, STATE_VALID, TIMEOUT_CODE
 
 
-def add_sms(dbs, sms_content, phone, create_user):
+def add_sms(dbs, sms_content, phone, create_user='xyy'):
     msg = ''
     try:
         sms = CustomerSms()
