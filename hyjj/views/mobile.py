@@ -8,11 +8,12 @@ import redis
 import string
 from pyramid.view import view_config
 from datetime import datetime
-from ..service.sendsms_service import add_sms, add_code_redis, make_random
+from ..service.sendsms_service import *
 from ..common.sendsms import send
 from ..common.constant import CODE_ERROR, CODE_SUCCESS, CODE_WRONG
 from ..common.loguntil import HyLog
 from ..common.jsonutils import other_response
+from ..common.redisutil import create_redis
 
 
 @view_config(route_name='sendCode', renderer='json')
@@ -34,10 +35,15 @@ def send_code(request):
     if not error_msg:
         code = make_random(6)
         content = content % (user_name, code)
-        send(user_phone, content)
         redis_host = request.registry.settings['redis.sessions.host']
-        add_code_redis(user_phone, code, redis_host)
-        error_msg = add_sms(dbs, sms_content=content, phone=user_phone)
+        r = create_redis(redis_host)
+        num = r.get(request.client_addr)
+        num = int(num) if num else 0
+        if num <= 9:
+            add_code_redis(user_phone, code, redis_host)
+            add_ip_no_redis(request.client_addr, num + 1, redis_host)
+            send(user_phone, content)
+            error_msg = add_sms(dbs, sms_content=content, phone=user_phone)
     if error_msg:
         json_a = {
             'returnCode': CODE_ERROR,
