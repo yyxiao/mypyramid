@@ -28,7 +28,6 @@ class RiskAnswers(Base):
     __tablename__ = 'risk_answers'                                                              # 答案表
     id = Column(INT, Sequence('risk_answers_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
     question_id = Column(INT)                           # 问题id
-    product_hobby = Column(VARCHAR(100))                # 产品偏好
     answer_name = Column(VARCHAR(100))                  # 答案描述
     selection_no = Column(CHAR(2))                      # 选项编号
     create_user = Column(VARCHAR(20))                   # 创建人

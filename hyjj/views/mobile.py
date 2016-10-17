@@ -5,6 +5,7 @@ __author__ = xyy
 __mtime__ = 2016/10/13
 """
 import redis
+import json
 from pyramid.view import view_config
 from datetime import datetime
 from ..common.sendsms import send
@@ -107,6 +108,37 @@ class MobileView(BaseUtil):
             }
         self.hyLog.log_in(self.request.client_addr, '', ('accountBinding failed ' + error_msg if error_msg
                                                          else 'sendCode success'), 'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='riskQuestion', renderer='json')
+    def risk_question(self):
+        """
+        风险题目查询
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        if not wechat_id:
+            error_msg = '用户手机不能为空！'
+        if not error_msg:
+            questions = self.riskService.search_questions(dbs)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'questionList': questions
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('riskQuestion failed ' + error_msg if error_msg else 'riskQuestion success'),
+                          'mobile')
         resp = other_response(json_a=json_a)
         return resp
 
