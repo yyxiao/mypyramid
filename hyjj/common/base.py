@@ -13,7 +13,9 @@ class BaseUtil:
     def __init__(self, request):
         self.request = request
 
+        hy_log_mod = importlib.import_module('hyjj.common.{0}'.format('loguntil'))
         customer_mod = importlib.import_module('hyjj.service.{0}'.format('customer_service'))
-        hy_log = importlib.import_module('hyjj.common.{0}'.format('loguntil'))
+        send_sms_mod = importlib.import_module('hyjj.service.{0}'.format('sendsms_service'))
         self.customerService = getattr(customer_mod, 'CustomerService')()
-        self.hyLog = getattr(hy_log, 'HyLog')()
+        self.sendSmsService = getattr(send_sms_mod, 'SendSmsService')()
+        self.hyLog = getattr(hy_log_mod, 'HyLog')()

@@ -7,7 +7,6 @@ __mtime__ = 2016/10/13
 import redis
 from pyramid.view import view_config
 from datetime import datetime
-from ..service.sendsms_service import *
 from ..common.sendsms import send
 from ..common import constant
 from ..common.jsonutils import other_response
@@ -33,17 +32,17 @@ class MobileView(BaseUtil):
         elif not user_name:
             error_msg = '用户姓名不能为空！'
         if not error_msg:
-            code = make_random(6)
+            code = self.sendSmsService.make_random(6)
             content = constant.SMS_DESC % (user_name, code)
             redis_host = self.request.registry.settings['redis.sessions.host']
             r = create_redis(redis_host)
             num = r.get(self.request.client_addr)
             num = int(num) if num else 0
             if num <= 9:
-                add_code_redis(user_phone, code, redis_host)
-                add_ip_no_redis(self.request.client_addr, num + 1, redis_host)
+                self.sendSmsService.add_code_redis(user_phone, code, redis_host)
+                self.sendSmsService.add_ip_no_redis(self.request.client_addr, num + 1, redis_host)
                 send(user_phone, content)
-                error_msg = add_sms(dbs, sms_content=content, phone=user_phone)
+                error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -91,7 +90,9 @@ class MobileView(BaseUtil):
                 error_msg = '验证码有误请重新输入！'
                 error_code = constant.CODE_WRONG
             else:
-                self.customerService.add_customer(dbs, cust_id='a', openid=wechat_id, indiinst_flag='a', cust_name='b')
+                self.customerService.add_customer(dbs, cust_id='a', openid=wechat_id, indiinst_flag='a', cust_name='b',
+                                                  phone='15800786806', risk_level=1,
+                                                  risk_expi_date='2016-10-17 09:58:00')
         if error_msg:
             json_a = {
                 'returnCode': error_code,
@@ -118,5 +119,5 @@ class MobileView(BaseUtil):
         date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
         date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
         date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        add_code_redis(15800786806, 201293, redis_host)
+        self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
         # add_code_redis(15800786807, 201294, redis_host)
