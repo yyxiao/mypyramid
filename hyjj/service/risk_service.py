@@ -62,3 +62,9 @@ class RiskService:
         except Exception as e:
             HyLog.log_error(e)
             return '添加评测信息失败，请重试！'
+
+    @staticmethod
+    def search_customer_risk_level(dbs, customer_id):
+        customer_risk = dbs.query(CustomerRisk.risk_level).filter(CustomerRisk.cust_id == customer_id).first()
+        risk_level = customer_risk[0] if customer_risk[0] else ''
+        return risk_level

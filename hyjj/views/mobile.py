@@ -163,7 +163,7 @@ class MobileView(BaseUtil):
         elif not indiinst_flag:
             error_msg = '对私对公标志不能为空！'
         if not error_msg:
-            questions = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers, indiinst_flag, cert_type, cert_no)
+            risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers, indiinst_flag, cert_type, cert_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -173,22 +173,57 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'questionList': questions
+                'riskLevel': risk_level
             }
         self.hyLog.log_in(self.request.client_addr, '',
-                          ('riskQuestion failed ' + error_msg if error_msg else 'riskQuestion success'),
+                          ('riskAssess failed ' + error_msg if error_msg else 'riskAssess success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='riskSearch', renderer='json')
+    def risk_search(self):
+        """
+        风险评估查询
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        if not error_msg:
+            risk_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'riskLevel': risk_level
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('riskSearch failed ' + error_msg if error_msg else 'riskSearch success'),
                           'mobile')
         resp = other_response(json_a=json_a)
         return resp
 
     @view_config(route_name='test', renderer='json')
     def send_test(self):
-        redis_host = self.request.registry.settings['redis.sessions.host']
-        pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
-        r = redis.StrictRedis(connection_pool=pool)
-        # r.set(ip, num)
-        date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
+        # redis_host = self.request.registry.settings['redis.sessions.host']
+        # pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
+        # r = redis.StrictRedis(connection_pool=pool)
+        # # r.set(ip, num)
+        # date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        return level
         # add_code_redis(15800786807, 201294, redis_host)
