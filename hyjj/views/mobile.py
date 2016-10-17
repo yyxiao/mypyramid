@@ -220,7 +220,7 @@ class MobileView(BaseUtil):
         # r.set(ip, num)
         date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
         date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
         self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
         # dbs = self.request.dbsession
         # wechat_id = self.request.POST.get('wechatId', '')
