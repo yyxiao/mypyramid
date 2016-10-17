@@ -122,9 +122,48 @@ class MobileView(BaseUtil):
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         if not wechat_id:
-            error_msg = '用户手机不能为空！'
+            error_msg = '用户wechat_id不能为空！'
         if not error_msg:
             questions = self.riskService.search_questions(dbs)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'questionList': questions
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('riskQuestion failed ' + error_msg if error_msg else 'riskQuestion success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='riskAssess', renderer='json')
+    def risk_assess(self):
+        """
+        风险评估
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        risk_answers = self.request.POST.get('riskAnswer', '')
+        indiinst_flag = self.request.POST.get('indiinstFlag', '')
+        cert_type = self.request.POST.get('certType', '')
+        cert_no = self.request.POST.get('certNo', '')
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not risk_answers:
+            error_msg = '风险题目答案！'
+        elif not indiinst_flag:
+            error_msg = '对私对公标志不能为空！'
+        if not error_msg:
+            questions = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers, indiinst_flag, cert_type, cert_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,

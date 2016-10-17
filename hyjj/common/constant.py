@@ -11,8 +11,8 @@ CARD_TYPE = {'身份证': '01', '护照': '02', '港澳台证件': '03', '军官
 SEND_URL = 'http://10.0.130.11:8080/ema/http/SendSms'
 SEND_PWD = 'abc123'
 
-STATE_VALID = 'A'
-STATE_INVALID = 'B'
+STATE_VALID = 1
+STATE_INVALID = 0
 
 CODE_SUCCESS = '0000000'
 CODE_ERROR = '0000001'

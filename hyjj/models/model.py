@@ -18,9 +18,9 @@ class RiskQuestion(Base):
     question_no = Column(VARCHAR(15))                   # 问题序号
     question_name = Column(VARCHAR(300))                # 问题描述
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))  # 更新人
-    update_time = Column(DateTime)  # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 更新时间
     state = Column(VARCHAR(1))                  # 是否有效
 
 
@@ -31,9 +31,9 @@ class RiskAnswers(Base):
     answer_name = Column(VARCHAR(100))                  # 答案描述
     selection_no = Column(CHAR(2))                      # 选项编号
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
 
 
 class CustomerRisk(Base):
@@ -46,9 +46,9 @@ class CustomerRisk(Base):
     risk_level = Column(CHAR(2))                        # 风险等级
     remark = Column(VARCHAR(100))                       # 备注
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -64,9 +64,9 @@ class CustomerInfo(Base):
     risk_expi_date = Column(DateTime)                   # 风险评估失效日期
     version = Column(VARCHAR(1))                        # 版本号
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -77,9 +77,9 @@ class CustomerCollProd(Base):
     prod_id = Column(VARCHAR(20))                       # 产品id
     version = Column(VARCHAR(1))                        # 版本号
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -93,9 +93,9 @@ class CustomerOrderSeq(Base):
     phone = Column(VARCHAR(20))                         # 预约电话
     version = Column(VARCHAR(1))                        # 版本号
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -105,5 +105,5 @@ class CustomerSms(Base):
     sms_content = Column(VARCHAR(300))                  # 问题描述
     phone = Column(VARCHAR(11))                         # 手机号码
     create_user = Column(VARCHAR(20))                   # 创建人
-    create_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 创建时间
+    create_time = Column(DateTime)                      # 创建时间
     state = Column(VARCHAR(1))                  # 是否有效
