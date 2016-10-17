@@ -214,16 +214,16 @@ class MobileView(BaseUtil):
 
     @view_config(route_name='test', renderer='json')
     def send_test(self):
-        # redis_host = self.request.registry.settings['redis.sessions.host']
-        # pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
-        # r = redis.StrictRedis(connection_pool=pool)
-        # # r.set(ip, num)
-        # date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
-        dbs = self.request.dbsession
-        wechat_id = self.request.POST.get('wechatId', '')
-        level = self.riskService.search_customer_risk_level(dbs, wechat_id)
-        return level
+        redis_host = self.request.registry.settings['redis.sessions.host']
+        pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
+        r = redis.StrictRedis(connection_pool=pool)
+        # r.set(ip, num)
+        date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
+        # dbs = self.request.dbsession
+        # wechat_id = self.request.POST.get('wechatId', '')
+        # level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        # return level
         # add_code_redis(15800786807, 201294, redis_host)
