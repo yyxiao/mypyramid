@@ -212,6 +212,37 @@ class MobileView(BaseUtil):
         resp = other_response(json_a=json_a)
         return resp
 
+    @view_config(route_name='fundList', renderer='json')
+    def product_list(self):
+        """
+        风险评估查询
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        if not error_msg:
+            risk_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'riskLevel': risk_level
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('riskSearch failed ' + error_msg if error_msg else 'riskSearch success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
     @view_config(route_name='test', renderer='json')
     def send_test(self):
         redis_host = self.request.registry.settings['redis.sessions.host']
