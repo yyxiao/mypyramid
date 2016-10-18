@@ -17,6 +17,7 @@ from sqlalchemy import (
 from .meta import Other
 from datetime import datetime
 
+
 class City(Other):
     __tablename__ = 'city'                                                              # 测试多数据源多表
     code = Column(VARCHAR(5), primary_key=True)                   # code
