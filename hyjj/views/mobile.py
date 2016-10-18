@@ -13,6 +13,7 @@ from ..common import constant
 from ..common.jsonutils import other_response
 from ..common.redisutil import create_redis
 from ..common.base import BaseUtil
+from ..models.product_model import City
 
 
 class MobileView(BaseUtil):
@@ -245,16 +246,28 @@ class MobileView(BaseUtil):
 
     @view_config(route_name='test', renderer='json')
     def send_test(self):
-        redis_host = self.request.registry.settings['redis.sessions.host']
-        pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
-        r = redis.StrictRedis(connection_pool=pool)
-        # r.set(ip, num)
-        date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
-        # dbs = self.request.dbsession
-        # wechat_id = self.request.POST.get('wechatId', '')
-        # level = self.riskService.search_customer_risk_level(dbs, wechat_id)
-        # return level
+        # redis_host = self.request.registry.settings['redis.sessions.host']
+        # pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
+        # r = redis.StrictRedis(connection_pool=pool)
+        # # r.set(ip, num)
+        # date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        # self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        dbms = self.request.mysqldbsession
+        city = dbms.query(City.code, City.name).all()
+        city_list = []
+        for ci in city:
+            ci_dict = dict()
+            ci_dict['code'] = ci[0] if ci[0] else ''
+            ci_dict['name'] = ci[1] if ci[1] else ''
+            city_list.append(ci_dict)
+        json_a = dict()
+        json_a["city"] = city_list
+        json_a["level"] = level
+
+        return json_a
         # add_code_redis(15800786807, 201294, redis_host)

@@ -16,3 +16,6 @@ HYJJ_SCHEMA = 'public'
 
 metadata = MetaData(schema=HYJJ_SCHEMA, naming_convention=NAMING_CONVENTION)
 Base = declarative_base(metadata=metadata)
+
+other_metadata = MetaData(naming_convention=NAMING_CONVENTION)
+Other = declarative_base(metadata=other_metadata)

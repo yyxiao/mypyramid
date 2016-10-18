@@ -7,7 +7,7 @@ from sqlalchemy import (
     TEXT
 )
 
-from .meta import Base, HYJJ_SCHEMA
+from .meta import Base, HYJJ_SCHEMA, Other
 from datetime import datetime
 
 

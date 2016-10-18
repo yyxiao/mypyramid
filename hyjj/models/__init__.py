@@ -16,6 +16,10 @@ def get_engine(settings, prefix='sqlalchemy.'):
     return engine_from_config(settings, prefix)
 
 
+def get_other_engine(settings, prefix='mysql.'):
+    return engine_from_config(settings, prefix)
+
+
 def get_session_factory(engine):
     factory = sessionmaker()
     factory.configure(bind=engine)
@@ -64,10 +68,20 @@ def includeme(config):
     session_factory = get_session_factory(get_engine(settings))
     config.registry['dbsession_factory'] = session_factory
 
+    session_mysql_factory = get_session_factory(get_other_engine(settings))
+    config.registry['dbsession_mysql_factory'] = session_mysql_factory
+
     # make request.dbsession available for use in Pyramid
     config.add_request_method(
         # r.tm is the transaction manager used by pyramid_tm
         lambda r: get_tm_session(session_factory, r.tm),
         'dbsession',
+        reify=True
+    )
+
+    config.add_request_method(
+        # r.tm is the transaction manager used by pyramid_tm
+        lambda r: get_tm_session(session_mysql_factory, r.tm),
+        'mysqldbsession',
         reify=True
     )
