@@ -13,7 +13,6 @@ from ..common import constant
 from ..common.jsonutils import other_response
 from ..common.redisutil import create_redis
 from ..common.base import BaseUtil
-from ..models.product_model import City
 
 
 class MobileView(BaseUtil):
@@ -55,8 +54,8 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': ''
             }
-        self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' + error_msg if error_msg else 'sendCode success'),
-                     'mobile')
+        self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' +
+                                                         error_msg if error_msg else 'sendCode success'), 'mobile')
         resp = other_response(json_a=json_a)
         return resp
 
@@ -164,7 +163,8 @@ class MobileView(BaseUtil):
         elif not indiinst_flag:
             error_msg = '对私对公标志不能为空！'
         if not error_msg:
-            risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers, indiinst_flag, cert_type, cert_no)
+            risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers,
+                                                          indiinst_flag, cert_type, cert_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -244,30 +244,66 @@ class MobileView(BaseUtil):
         resp = other_response(json_a=json_a)
         return resp
 
+    @view_config(route_name='navList', renderer='json')
+    def nav_list(self):
+        """
+        风险评估净值走势
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbms = self.request.mysqldbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        pro_id = self.request.POST.get('productId', '')
+        nav_type = self.request.POST.get('navType', 1)
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not pro_id:
+            error_msg = '产品id不能为空！'
+        elif not nav_type:
+            error_msg = '净值走势类型不能为空！'
+        if not error_msg:
+            nav_list = self.productService.search_navs(dbms, wechat_id, pro_id, nav_type)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'navList': nav_list
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('navList failed ' + error_msg if error_msg else 'navList success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
     @view_config(route_name='test', renderer='json')
     def send_test(self):
-        # redis_host = self.request.registry.settings['redis.sessions.host']
-        # pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
-        # r = redis.StrictRedis(connection_pool=pool)
-        # # r.set(ip, num)
-        # date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
-        # self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
-        dbs = self.request.dbsession
-        wechat_id = self.request.POST.get('wechatId', '')
-        level = self.riskService.search_customer_risk_level(dbs, wechat_id)
-        dbms = self.request.mysqldbsession
-        city = dbms.query(City.code, City.name).all()
-        city_list = []
-        for ci in city:
-            ci_dict = dict()
-            ci_dict['code'] = ci[0] if ci[0] else ''
-            ci_dict['name'] = ci[1] if ci[1] else ''
-            city_list.append(ci_dict)
-        json_a = dict()
-        json_a["city"] = city_list
-        json_a["level"] = level
-
-        return json_a
+        redis_host = self.request.registry.settings['redis.sessions.host']
+        pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
+        r = redis.StrictRedis(connection_pool=pool)
+        # r.set(ip, num)
+        date1 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        date2 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        date3 = datetime.now().strftime('%Y-%m-%d 23:59:59 %f')
+        self.sendSmsService.add_code_redis(15800786806, 201293, redis_host)
+        # dbs = self.request.dbsession
+        # wechat_id = self.request.POST.get('wechatId', '')
+        # level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+        # dbms = self.request.mysqldbsession
+        # city = dbms.query(City.code, City.name).all()
+        # city_list = []
+        # for ci in city:
+        #     ci_dict = dict()
+        #     ci_dict['code'] = ci[0] if ci[0] else ''
+        #     ci_dict['name'] = ci[1] if ci[1] else ''
+        #     city_list.append(ci_dict)
+        # json_a = dict()
+        # json_a["city"] = city_list
+        # json_a["level"] = level
+        # return json_a
         # add_code_redis(15800786807, 201294, redis_host)

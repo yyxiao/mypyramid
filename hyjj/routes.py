@@ -15,4 +15,5 @@ def mobile_include(config):
     config.add_route('fundDetail', '/fundDetail')
     config.add_route('fundCollect', '/fundCollect')
     config.add_route('fundBook', '/fundBook')
+    config.add_route('navList', '/navList')
     config.add_route('test', '/test')
