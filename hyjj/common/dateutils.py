@@ -98,7 +98,7 @@ def get_pre_date(sdate):
 def get_predate_days(sdate, days, time_format=date_pattern2):
     ddate = datetime.datetime.strptime(sdate, date_pattern1)
     rdate = ddate + datetime.timedelta(days=days)
-    return rdate.strftime(date_pattern2)
+    return rdate.strftime(time_format)
 
 
 def get_pre_month_end(sdate):

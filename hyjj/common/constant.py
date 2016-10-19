@@ -22,7 +22,7 @@ TIMEOUT_CODE = 180
 
 SMS_DESC = '尊敬的%s先生，您好，您网上交易重置登录密码验证码为%s，请在三分钟内输入该有效验证码'
 
-NAV_TYPE_1 = 1  # 三个月
-NAV_TYPE_2 = 2  # 六个月
-NAV_TYPE_3 = 3  # 一年
-NAV_TYPE_4 = 4  # 今年
+NAV_TYPE_1 = '1'  # 三个月
+NAV_TYPE_2 = '2'  # 六个月
+NAV_TYPE_3 = '3'  # 一年
+NAV_TYPE_4 = '4'  # 今年
