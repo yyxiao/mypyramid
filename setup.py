@@ -14,11 +14,11 @@ requires = [
     'pyramid_debugtoolbar',
     'pyramid_tm',
     'SQLAlchemy',
-    'mysqlclient',
     'transaction',
     'zope.sqlalchemy',
     'waitress',
-    'pyramid_redis_sessions'
+    'pyramid_redis_sessions',
+    'mysql-connector-python'
     ]
 
 tests_require = [

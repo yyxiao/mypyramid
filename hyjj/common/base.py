@@ -5,7 +5,6 @@ __author__ = xyy
 __mtime__ = 2016/10/14
 """
 import importlib
-from ..service import sendsms_service
 
 
 class BaseUtil:
