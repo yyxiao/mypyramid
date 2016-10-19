@@ -42,3 +42,22 @@ class ProductService:
             nav_list.append(nav_dict)
         return nav_list
 
+    @staticmethod
+    def search_products(dbs, wechat_id, page_no):
+        nav_list = []
+        navs = dbs.query(CmsProductNav.id, CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.accnav,
+                         CmsProductNav.navTime, CmsProductNav.hsnav, CmsProductNav.activeFlag, CmsProductNav.version)
+        navs = navs.all()
+        for nav in navs:
+            nav_dict = dict()
+            nav_dict['id'] = nav.id if nav.id else ''
+            nav_dict['productId'] = nav.productId if nav.productId else ''
+            nav_dict['nav'] = nav.nav if nav.nav else ''
+            nav_dict['accnav'] = nav.accnav if nav.accnav else ''
+            nav_dict['navTime'] = nav.navTime if nav.navTime else ''
+            nav_dict['hsnav'] = nav.hsnav if nav.hsnav else ''
+            nav_dict['activeFlag'] = nav.activeFlag if nav.activeFlag else ''
+            nav_dict['version'] = nav.version if nav.version else ''
+            nav_list.append(nav_dict)
+        return nav_list
+

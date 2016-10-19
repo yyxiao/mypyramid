@@ -4,6 +4,7 @@
 __author__ = xyy
 __mtime__ = 2016/10/12
 """
+PAGE_SIZE = 10
 
 # 证件类型
 CARD_TYPE = {'身份证': '01', '护照': '02', '港澳台证件': '03', '军官证': '04'}
@@ -14,9 +15,9 @@ SEND_PWD = 'abc123'
 STATE_VALID = 1
 STATE_INVALID = 0
 
-CODE_SUCCESS = '0000000'
-CODE_ERROR = '0000001'
-CODE_WRONG = '0000002'
+CODE_SUCCESS = '00'
+CODE_ERROR = '01'
+CODE_WRONG = '02'
 
 TIMEOUT_CODE = 180
 

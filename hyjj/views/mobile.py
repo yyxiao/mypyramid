@@ -281,6 +281,40 @@ class MobileView(BaseUtil):
         resp = other_response(json_a=json_a)
         return resp
 
+    # @view_config(route_name='fundList', renderer='json')
+    def product_list(self):
+        """
+        查找产品列表
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbms = self.request.mysqldbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        page_no = self.request.POST.get('pageNo', 1)
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not page_no:
+            error_msg = '页码不能为空！'
+        if not error_msg:
+            nav_list = self.productService.search_products(dbms, wechat_id, page_no)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'navList': nav_list
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('navList failed ' + error_msg if error_msg else 'navList success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
     @view_config(route_name='test', renderer='json')
     def send_test(self):
         redis_host = self.request.registry.settings['redis.sessions.host']
