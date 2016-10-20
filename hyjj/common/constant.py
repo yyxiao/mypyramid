@@ -15,6 +15,9 @@ SEND_PWD = 'abc123'
 STATE_VALID = '1'  # 有效
 STATE_INVALID = '0'   # 无效
 
+QUESTION_USER = '0'     # 个人
+QUESTION_ORG = '1'      # 机构
+
 CODE_SUCCESS = '00'
 CODE_ERROR = '01'
 CODE_WRONG = '02'

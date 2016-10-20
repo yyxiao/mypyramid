@@ -120,10 +120,11 @@ class MobileView(BaseUtil):
         error_msg = ''
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
+        type = self.request.POST.get('type', '0')
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            questions = self.riskService.search_questions(dbs)
+            questions = self.riskService.search_questions(dbs, type)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -260,12 +261,13 @@ class MobileView(BaseUtil):
         dbms = self.request.mysqldbsession
         wechat_id = self.request.POST.get('wechatId', '')
         page_no = self.request.POST.get('pageNo', 0)
+        search_key = self.request.POST.get('searchKey', '')
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         elif not page_no:
             error_msg = '页码不能为空！'
         if not error_msg:
-            pro_list = self.productService.search_products(dbms, wechat_id, page_no)
+            pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -286,11 +288,12 @@ class MobileView(BaseUtil):
     @view_config(route_name='productDetail', renderer='json')
     def product_detail(self):
         """
-        查找产品列表
+        查找产品详情
         :param self:
         :return:
         """
         error_msg = ''
+        dbs = self.request.dbsession
         dbms = self.request.mysqldbsession
         wechat_id = self.request.POST.get('wechatId', '')
         product_id = self.request.POST.get('productId', 0)
@@ -299,7 +302,7 @@ class MobileView(BaseUtil):
         elif not product_id:
             error_msg = '产品ID不能为空！'
         if not error_msg:
-            product = self.productService.search_product_info(dbms, wechat_id, product_id)
+            product = self.productService.search_product_info(dbs, dbms, wechat_id, product_id)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,

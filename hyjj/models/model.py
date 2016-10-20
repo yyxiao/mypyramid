@@ -14,12 +14,10 @@ from datetime import datetime
 class RiskQuestion(Base):
     __tablename__ = 'risk_question'                                                              # 问题表
     id = Column(INT, Sequence('risk_question_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
-    question_no = Column(VARCHAR(15))                   # 问题序号
+    question_type = Column(VARCHAR(1))                   # 类型
     question_name = Column(VARCHAR(300))                # 问题描述
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
-    update_user = Column(VARCHAR(20))  # 更新人
-    update_time = Column(DateTime)  # 更新时间
     state = Column(VARCHAR(1))                  # 是否有效
 
 
@@ -31,8 +29,7 @@ class RiskAnswers(Base):
     selection_no = Column(VARCHAR(2))                      # 选项编号
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
-    update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime)                      # 更新时间
+    score = Column(INT)                      # 分数
 
 
 class CustomerRisk(Base):

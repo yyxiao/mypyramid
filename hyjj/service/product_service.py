@@ -5,7 +5,9 @@ __author__ = xyy
 __mtime__ = 2016/10/14
 """
 
+from sqlalchemy import or_
 from ..models.product_model import CmsProductNav, CmsProduct
+from ..models.model import CustomerCollProd
 from ..common.constant import NAV_TYPE_1, NAV_TYPE_2, NAV_TYPE_3, NAV_TYPE_4, PAGE_SIZE
 from ..common.dateutils import date_now, get_predate_days, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
@@ -46,7 +48,7 @@ class ProductService:
         return nav_list
 
     @staticmethod
-    def search_products(dbs, wechat_id, page_no):
+    def search_products(dbs, wechat_id, page_no, search_key):
         page_offset = int(page_no) * 10
         pro_list = []
         nav1 = dbs.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav)\
@@ -58,8 +60,11 @@ class ProductService:
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
-            .order_by(CmsProduct.id.desc()).offset(page_offset).limit(PAGE_SIZE)
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+        if search_key:
+            pros = pros.filter(or_(CmsProduct.fullName.like('%' + search_key + '%'),
+                                   CmsProduct.name.like('%' + search_key + '%')))
+        pros = pros.order_by(CmsProduct.id.desc()).offset(page_offset).limit(PAGE_SIZE)
         for pro in pros:
             nav_dict = dict()
             nav_dict['id'] = pro[0] if pro[0] else ''
@@ -81,16 +86,18 @@ class ProductService:
                 if pro[15] else ''
             nav_dict['accnav'] = pro[16] if pro[16] else ''
             pro_list.append(nav_dict)
-        HyLog.log_info("[search_products]:" + str(pro_list))
+        # HyLog.log_info(pro_list)
         return pro_list
 
     @staticmethod
-    def search_product_info(dbs, wechat_id, product_id):
-        pro = dbs.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
+    def search_product_info(dbs, dbms, wechat_id, product_id):
+        pro = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
                          CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
                          CmsProduct.productStartDate, CmsProduct.deadlineType)\
             .filter(CmsProduct.id == product_id).filter(CmsProduct.isDeleted == '0').first()
+        cust_pro = dbs.query(CustomerCollProd)\
+            .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
         nav_dict = dict()
         nav_dict['id'] = pro[0] if pro[0] else ''
         nav_dict['productNo'] = pro[1] if pro[1] else ''
@@ -106,6 +113,6 @@ class ProductService:
         nav_dict['hyComment'] = pro[11] if pro[11] else ''
         nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
         nav_dict['deadlineType'] = pro[13] if pro[13] else ''
-        nav_dict['isCollect'] = '0'
+        nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict

@@ -13,17 +13,18 @@ from ..common.loguntil import HyLog
 
 class RiskService:
 
-    def search_questions(self, dbs):
+    def search_questions(self, dbs, type):
         ques_list = []
-        questions = dbs.query(RiskQuestion.id, RiskQuestion.question_no, RiskQuestion.question_name).all()
+        questions = dbs.query(RiskQuestion.id, RiskQuestion.question_name)\
+            .filter(RiskQuestion.state == STATE_VALID).filter(RiskQuestion.question_type == type).all()
         for ques in questions:
             ans_list = self.__search_answer(dbs, ques.id)
             ques_dict = dict()
             ques_dict['id'] = ques[0] if ques[0] else ''
-            ques_dict['questionNo'] = ques[1] if ques[1] else ''
-            ques_dict['questionName'] = ques[2] if ques[2] else ''
+            ques_dict['questionName'] = ques[1] if ques[1] else ''
             ques_dict['ansList'] = ans_list
             ques_list.append(ques_dict)
+        HyLog.log_info(ques_list)
         return ques_list
 
     @staticmethod
