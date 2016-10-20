@@ -260,7 +260,7 @@ class MobileView(BaseUtil):
         error_msg = ''
         dbms = self.request.mysqldbsession
         wechat_id = self.request.POST.get('wechatId', '')
-        page_no = self.request.POST.get('pageNo', 1)
+        page_no = self.request.POST.get('pageNo', 0)
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         elif not page_no:

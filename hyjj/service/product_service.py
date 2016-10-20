@@ -7,8 +7,9 @@ __mtime__ = 2016/10/14
 
 from ..models.product_model import CmsProductNav, CmsProduct
 from ..common.constant import NAV_TYPE_1, NAV_TYPE_2, NAV_TYPE_3, NAV_TYPE_4, PAGE_SIZE
-from ..common.dateutils import date_now, get_predate_days, date_pattern1
+from ..common.dateutils import date_now, get_predate_days, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
+import datetime
 
 
 class ProductService:
@@ -35,7 +36,8 @@ class ProductService:
             nav_dict['productId'] = nav.productId if nav.productId else ''
             nav_dict['nav'] = nav.nav if nav.nav else ''
             nav_dict['accnav'] = nav.accnav if nav.accnav else ''
-            nav_dict['navTime'] = nav.navTime if nav.navTime else ''
+            nav_dict['navTime'] = datetime.datetime.strptime(nav.navTime, date_pattern2).strftime(date_pattern1) \
+                if nav.navTime else ''
             nav_dict['hsnav'] = nav.hsnav if nav.hsnav else ''
             nav_dict['activeFlag'] = nav.activeFlag if nav.activeFlag else ''
             nav_dict['version'] = nav.version if nav.version else ''
@@ -45,6 +47,7 @@ class ProductService:
 
     @staticmethod
     def search_products(dbs, wechat_id, page_no):
+        page_offset = int(page_no) * 10
         pro_list = []
         nav1 = dbs.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav)\
             .order_by(CmsProductNav.productId.desc(), CmsProductNav.navTime.desc()).subquery()
@@ -56,7 +59,7 @@ class ProductService:
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.useStat == '1' and CmsProduct == '0')\
-            .order_by(CmsProduct.id.desc()).offset(0).limit(PAGE_SIZE)
+            .order_by(CmsProduct.id.desc()).offset(page_offset).limit(PAGE_SIZE)
         for pro in pros:
             nav_dict = dict()
             nav_dict['id'] = pro[0] if pro[0] else ''
@@ -71,11 +74,12 @@ class ProductService:
             nav_dict['productScale'] = pro[9] if pro[9] else ''
             nav_dict['productStat'] = pro[10] if pro[10] else ''
             nav_dict['hyComment'] = pro[11] if pro[11] else ''
-            # nav_dict['productStartDate'] = pro[12] if pro[12] else ''
+            nav_dict['productStartDate'] = str(pro[12]) if str(pro[12]) else ''
             nav_dict['deadlineType'] = pro[13] if pro[13] else ''
             nav_dict['nav'] = pro[14] if pro[14] else ''
-            nav_dict['navTime'] = pro[15] if pro[15] else ''
-            nav_dict['accnav'] = pro[15] if pro[15] else ''
+            nav_dict['navTime'] = datetime.datetime.strptime(pro[15], date_pattern2).strftime(date_pattern1) \
+                if pro[15] else ''
+            nav_dict['accnav'] = pro[16] if pro[16] else ''
             pro_list.append(nav_dict)
         HyLog.log_info("[search_products]:" + str(pro_list))
         return pro_list
