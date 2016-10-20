@@ -92,8 +92,7 @@ class MobileView(BaseUtil):
                 error_code = constant.CODE_WRONG
             else:
                 self.customerService.add_customer(dbs, cust_id='a', openid=wechat_id, indiinst_flag='a', cust_name='b',
-                                                  phone='15800786806', risk_level=1,
-                                                  risk_expi_date='2016-10-17 09:58:00')
+                                                  phone=user_phone, risk_level=1)
         if error_msg:
             json_a = {
                 'returnCode': error_code,
@@ -279,7 +278,75 @@ class MobileView(BaseUtil):
                 'productList': pro_list
             }
         self.hyLog.log_in(self.request.client_addr, '',
-                          ('navList failed ' + error_msg if error_msg else 'navList success'),
+                          ('productList failed ' + error_msg if error_msg else 'productList success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='productDetail', renderer='json')
+    def product_detail(self):
+        """
+        查找产品列表
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbms = self.request.mysqldbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        product_id = self.request.POST.get('productId', 0)
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not product_id:
+            error_msg = '产品ID不能为空！'
+        if not error_msg:
+            product = self.productService.search_product_info(dbms, wechat_id, product_id)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'product': product
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('productDetail failed ' + error_msg if error_msg else 'productDetail success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='productCollect', renderer='json')
+    def product_collect(self):
+        """
+        产品收藏
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbms = self.request.mysqldbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        product_id = self.request.POST.get('productId', 0)
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not product_id:
+            error_msg = '产品ID不能为空！'
+        if not error_msg:
+            product = self.customerService.collect_product_by_id(dbms, wechat_id, product_id)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'product': product
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('productDetail failed ' + error_msg if error_msg else 'productDetail success'),
                           'mobile')
         resp = other_response(json_a=json_a)
         return resp
