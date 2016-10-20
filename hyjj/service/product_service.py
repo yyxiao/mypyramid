@@ -58,7 +58,7 @@ class ProductService:
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1' and CmsProduct == '0')\
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
             .order_by(CmsProduct.id.desc()).offset(page_offset).limit(PAGE_SIZE)
         for pro in pros:
             nav_dict = dict()
