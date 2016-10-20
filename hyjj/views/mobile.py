@@ -325,7 +325,7 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
-        dbms = self.request.mysqldbsession
+        dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         product_id = self.request.POST.get('productId', 0)
         if not wechat_id:
@@ -333,7 +333,7 @@ class MobileView(BaseUtil):
         elif not product_id:
             error_msg = '产品ID不能为空！'
         if not error_msg:
-            product = self.customerService.collect_product_by_id(dbms, wechat_id, product_id)
+            coll_state = self.customerService.collect_product_by_id(dbs, wechat_id, product_id)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -343,10 +343,10 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'product': product
+                'isCollect': coll_state
             }
         self.hyLog.log_in(self.request.client_addr, '',
-                          ('productDetail failed ' + error_msg if error_msg else 'productDetail success'),
+                          ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),
                           'mobile')
         resp = other_response(json_a=json_a)
         return resp

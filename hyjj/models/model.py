@@ -19,7 +19,7 @@ class RiskQuestion(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))  # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 更新时间
+    update_time = Column(DateTime)  # 更新时间
     state = Column(VARCHAR(1))                  # 是否有效
 
 
@@ -32,7 +32,7 @@ class RiskAnswers(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
+    update_time = Column(DateTime)                      # 更新时间
 
 
 class CustomerRisk(Base):
@@ -47,7 +47,7 @@ class CustomerRisk(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
+    update_time = Column(DateTime)                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -65,7 +65,7 @@ class CustomerInfo(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
+    update_time = Column(DateTime)                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -78,7 +78,7 @@ class CustomerCollProd(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
+    update_time = Column(DateTime)                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 
@@ -94,7 +94,7 @@ class CustomerOrderSeq(Base):
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
     update_user = Column(VARCHAR(20))                   # 更新人
-    update_time = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))                      # 更新时间
+    update_time = Column(DateTime)                      # 更新时间
     state = Column(VARCHAR(1))                          # 是否有效
 
 

@@ -38,22 +38,25 @@ class CustomerService:
         return msg
 
     @staticmethod
-    def collect_product_by_id(dbs, wechat_id, product_id, create_user):
+    def collect_product_by_id(dbs, wechat_id, product_id, create_user='xyy'):
         try:
             cus_coll = dbs.query(CustomerCollProd)\
-                .filter(CustomerCollProd.prod_id == product_id)\
-                .filter(CustomerCollProd.cust_id == wechat_id).first()
+                .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
             if not cus_coll:
                 cus_coll = CustomerCollProd()
                 cus_coll.cust_id = wechat_id
                 cus_coll.prod_id = product_id
                 cus_coll.create_user = create_user
                 cus_coll.create_time = date_now()
+                cus_coll.state = STATE_VALID
             else:
                 cus_coll.state = STATE_INVALID if cus_coll.state == STATE_VALID else STATE_VALID
                 cus_coll.update_user = create_user
+                cus_coll.update_time = date_now()
             dbs.merge(cus_coll)
+            dbs.flush()
             HyLog.log_info("[search_product_info]:" + str(cus_coll))
+            return cus_coll.state
         except Exception as e:
             HyLog.log_error(e)
-        return cus_coll.state
+            return ''
