@@ -16,4 +16,3 @@ def mobile_include(config):
     config.add_route('productCollect', '/productCollect')
     config.add_route('productBook', '/productBook')
     config.add_route('navList', '/navList')
-    config.add_route('test', '/test')
