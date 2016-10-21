@@ -16,7 +16,8 @@ class RiskService:
     def search_questions(self, dbs, type):
         ques_list = []
         questions = dbs.query(RiskQuestion.id, RiskQuestion.question_name)\
-            .filter(RiskQuestion.state == STATE_VALID).filter(RiskQuestion.question_type == type).all()
+            .filter(RiskQuestion.state == STATE_VALID).filter(RiskQuestion.question_type == type)\
+            .order_by(RiskQuestion.id).all()
         for ques in questions:
             ans_list = self.__search_answers(dbs, ques.id)
             ques_dict = dict()

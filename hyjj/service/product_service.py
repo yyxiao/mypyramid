@@ -44,7 +44,6 @@ class ProductService:
             nav_dict['activeFlag'] = nav.activeFlag if nav.activeFlag else ''
             nav_dict['version'] = nav.version if nav.version else ''
             nav_list.append(nav_dict)
-        HyLog.log_info("[search_navs]:" + nav_list)
         return nav_list
 
     @staticmethod
@@ -94,7 +93,7 @@ class ProductService:
         pro = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
                          CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
-                         CmsProduct.productStartDate, CmsProduct.deadlineType)\
+                         CmsProduct.productStartDate, CmsProduct.deadlineType, CmsProduct.manager)\
             .filter(CmsProduct.id == product_id).filter(CmsProduct.isDeleted == '0').first()
         cust_pro = dbs.query(CustomerCollProd)\
             .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
@@ -114,6 +113,7 @@ class ProductService:
             nav_dict['hyComment'] = pro[11] if pro[11] else ''
             nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
             nav_dict['deadlineType'] = pro[13] if pro[13] else ''
+            nav_dict['manager'] = pro[14] if pro[14] else ''
             nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict
