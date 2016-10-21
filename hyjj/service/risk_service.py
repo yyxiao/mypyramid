@@ -42,7 +42,7 @@ class RiskService:
         return ans_list
 
     def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, create_user='xyy'):
-        # TODO 调用接口，并评测风险等级
+        # TODO 调用接口保存用户证件类型、号码
         risk_answer_dict = eval(risk_answers)
         score = 0  # 评测得分
         risk_type = RISK_FIRST
@@ -80,7 +80,8 @@ class RiskService:
 
     @staticmethod
     def search_customer_risk_level(dbs, customer_id):
-        customer_risk = dbs.query(CustomerRisk.risk_level).filter(CustomerRisk.cust_id == customer_id).first()
+        customer_risk = dbs.query(CustomerRisk.risk_level)\
+            .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
         risk_level = customer_risk[0] if customer_risk[0] else ''
         return risk_level
 
