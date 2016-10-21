@@ -39,7 +39,7 @@ class CustomerRisk(Base):
     evaluating_time = Column(DateTime)                  # 评测时间
     cust_answers = Column(VARCHAR(60))                  # 风险题目答案
     score = Column(INT)                                 # 答卷得分
-    risk_level = Column(VARCHAR(2))                        # 风险等级
+    risk_level = Column(VARCHAR(6))                        # 风险等级
     remark = Column(VARCHAR(100))                       # 备注
     create_user = Column(VARCHAR(20))                   # 创建人
     create_time = Column(DateTime)                      # 创建时间
@@ -56,7 +56,7 @@ class CustomerInfo(Base):
     openid = Column(VARCHAR(20))                        # 微信OPENID
     cust_name = Column(VARCHAR(20))                     # 真实姓名
     phone = Column(VARCHAR(11))                         # 手机号码
-    risk_level = Column(VARCHAR(2))                        # 客户风险等级
+    risk_level = Column(VARCHAR(6))                        # 客户风险等级
     risk_expi_date = Column(DateTime)                   # 风险评估失效日期
     version = Column(VARCHAR(1))                        # 版本号
     create_user = Column(VARCHAR(20))                   # 创建人

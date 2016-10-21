@@ -99,20 +99,21 @@ class ProductService:
         cust_pro = dbs.query(CustomerCollProd)\
             .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
         nav_dict = dict()
-        nav_dict['id'] = pro[0] if pro[0] else ''
-        nav_dict['productNo'] = pro[1] if pro[1] else ''
-        nav_dict['fullName'] = pro[2] if pro[2] else ''
-        nav_dict['name'] = pro[3] if pro[3] else ''
-        nav_dict['type'] = pro[4] if pro[4] else ''
-        nav_dict['minDeadline'] = pro[5] if pro[5] else ''
-        nav_dict['maxDeadline'] = pro[6] if pro[6] else ''
-        nav_dict['supplierId'] = pro[7] if pro[7] else ''
-        nav_dict['supplierName'] = pro[8] if pro[8] else ''
-        nav_dict['productScale'] = pro[9] if pro[9] else ''
-        nav_dict['productStat'] = pro[10] if pro[10] else ''
-        nav_dict['hyComment'] = pro[11] if pro[11] else ''
-        nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
-        nav_dict['deadlineType'] = pro[13] if pro[13] else ''
-        nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
+        if pro:
+            nav_dict['id'] = pro[0] if pro[0] else ''
+            nav_dict['productNo'] = pro[1] if pro[1] else ''
+            nav_dict['fullName'] = pro[2] if pro[2] else ''
+            nav_dict['name'] = pro[3] if pro[3] else ''
+            nav_dict['type'] = pro[4] if pro[4] else ''
+            nav_dict['minDeadline'] = pro[5] if pro[5] else ''
+            nav_dict['maxDeadline'] = pro[6] if pro[6] else ''
+            nav_dict['supplierId'] = pro[7] if pro[7] else ''
+            nav_dict['supplierName'] = pro[8] if pro[8] else ''
+            nav_dict['productScale'] = pro[9] if pro[9] else ''
+            nav_dict['productStat'] = pro[10] if pro[10] else ''
+            nav_dict['hyComment'] = pro[11] if pro[11] else ''
+            nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
+            nav_dict['deadlineType'] = pro[13] if pro[13] else ''
+            nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict

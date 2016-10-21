@@ -153,18 +153,18 @@ class MobileView(BaseUtil):
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         risk_answers = self.request.POST.get('riskAnswer', '')
-        indiinst_flag = self.request.POST.get('indiinstFlag', '')
+        type = self.request.POST.get('type', '')
         cert_type = self.request.POST.get('certType', '')
         cert_no = self.request.POST.get('certNo', '')
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         elif not risk_answers:
             error_msg = '风险题目答案！'
-        elif not indiinst_flag:
+        elif not type:
             error_msg = '对私对公标志不能为空！'
         if not error_msg:
             risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers,
-                                                          indiinst_flag, cert_type, cert_no)
+                                                          type, cert_type, cert_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,

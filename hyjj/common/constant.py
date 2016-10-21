@@ -30,3 +30,8 @@ NAV_TYPE_1 = '1'  # 三个月
 NAV_TYPE_2 = '2'  # 六个月
 NAV_TYPE_3 = '3'  # 一年
 NAV_TYPE_4 = '4'  # 今年
+
+# 评测类型
+RISK_FIRST = '01'
+RISK_SECOND = '02'
+RISK_THIRD = '03'
