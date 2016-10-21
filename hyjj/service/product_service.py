@@ -57,7 +57,7 @@ class ProductService:
                          CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
-                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
+                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
         if search_key:
@@ -84,6 +84,7 @@ class ProductService:
             nav_dict['navTime'] = datetime.datetime.strptime(pro[15], date_pattern2).strftime(date_pattern1) \
                 if pro[15] else ''
             nav_dict['accnav'] = pro[16] if pro[16] else ''
+            nav_dict['hotStatus'] = pro[17] if pro[17] else ''
             pro_list.append(nav_dict)
         # HyLog.log_info(pro_list)
         return pro_list
@@ -93,7 +94,8 @@ class ProductService:
         pro = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
                          CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
-                         CmsProduct.productStartDate, CmsProduct.deadlineType, CmsProduct.manager)\
+                         CmsProduct.productStartDate, CmsProduct.deadlineType, CmsProduct.manager, CmsProduct.riskLv,
+                         CmsProduct.hotStatus, CmsProduct.publishStartDate)\
             .filter(CmsProduct.id == product_id).filter(CmsProduct.isDeleted == '0').first()
         cust_pro = dbs.query(CustomerCollProd)\
             .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
@@ -114,6 +116,9 @@ class ProductService:
             nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
             nav_dict['deadlineType'] = pro[13] if pro[13] else ''
             nav_dict['manager'] = pro[14] if pro[14] else ''
+            nav_dict['riskLv'] = pro[15] if pro[15] else ''
+            nav_dict['hotStatus'] = pro[16] if pro[16] else ''
+            nav_dict['publishStartDate'] = pro[17] if pro[17] else ''
             nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict
