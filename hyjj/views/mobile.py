@@ -403,7 +403,7 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            col_list = self.productService.search_products(dbms, wechat_id)
+            col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,

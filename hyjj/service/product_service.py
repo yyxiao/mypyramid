@@ -122,3 +122,20 @@ class ProductService:
             nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict
+
+    @staticmethod
+    def search_col_product(dbms, prod_id):
+        nav1 = dbms.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav) \
+            .order_by(CmsProductNav.productId.desc(), CmsProductNav.navTime.desc()).subquery()
+        nav_all = dbms.query(nav1).group_by(nav1.c.productId).subquery()
+        product = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
+                         CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
+                         CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
+                         CmsProduct.productStartDate, CmsProduct.deadlineType,
+                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus) \
+            .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId) \
+            .filter(CmsProduct.useStat == '1')\
+            .filter(CmsProduct.isDeleted == '0')\
+            .filter(CmsProduct.id == prod_id)
+        product = product.order_by(CmsProduct.id.desc()).first()
+        return product

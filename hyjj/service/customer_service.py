@@ -5,10 +5,12 @@ __author__ = xyy
 __mtime__ = 2016/10/14
 """
 
+import datetime
 from ..models.model import CustomerInfo, CustomerCollProd
 from ..common.constant import STATE_INVALID, STATE_VALID
-from ..common.dateutils import date_now
+from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
+from ..service.product_service import ProductService
 
 
 class CustomerService:
@@ -33,7 +35,7 @@ class CustomerService:
             dbs.add(customer)
             dbs.flush()
         except Exception as e:
-            msg = '新增短信发送记录失败，请核对后重试'
+            msg = '新增用户关联记录失败，请核对后重试'
             HyLog.log_error(e)
         return msg
 
@@ -63,25 +65,38 @@ class CustomerService:
 
     @staticmethod
     def book_product_by_id(dbs, wechat_id, product_id, phone, create_user='xyy'):
-        try:
-            cus_coll = dbs.query(CustomerCollProd) \
-                .filter(CustomerCollProd.prod_id == product_id).filter(
-                CustomerCollProd.cust_id == wechat_id).first()
-            if not cus_coll:
-                cus_coll = CustomerCollProd()
-                cus_coll.cust_id = wechat_id
-                cus_coll.prod_id = product_id
-                cus_coll.create_user = create_user
-                cus_coll.create_time = date_now()
-                cus_coll.state = STATE_VALID
-            else:
-                cus_coll.state = STATE_INVALID if cus_coll.state == STATE_VALID else STATE_VALID
-                cus_coll.update_user = create_user
-                cus_coll.update_time = date_now()
-            dbs.merge(cus_coll)
-            dbs.flush()
-            HyLog.log_info("[search_product_info]:" + str(cus_coll))
-            return cus_coll.state
-        except Exception as e:
-            HyLog.log_error(e)
-            return ''
+        # TODO 调用CRM产品预约接口
+        return ''
+
+    @staticmethod
+    def search_coll_product(dbs, dbms, wechat_id):
+        coll_prod_list = []
+        coll_prods = dbs.query(CustomerCollProd)\
+            .filter(CustomerCollProd.cust_id == wechat_id)\
+            .order_by(CustomerCollProd.create_time.desc()).all()
+        if coll_prods:
+            for coll_prod in coll_prods:
+                pro = ProductService.search_col_product(dbms, coll_prod.prod_id)
+                if pro:
+                    nav_dict = dict()
+                    nav_dict['id'] = pro[0] if pro[0] else ''
+                    nav_dict['productNo'] = pro[1] if pro[1] else ''
+                    nav_dict['fullName'] = pro[2] if pro[2] else ''
+                    nav_dict['name'] = pro[3] if pro[3] else ''
+                    nav_dict['type'] = pro[4] if pro[4] else ''
+                    nav_dict['minDeadline'] = pro[5] if pro[5] else ''
+                    nav_dict['maxDeadline'] = pro[6] if pro[6] else ''
+                    nav_dict['supplierId'] = pro[7] if pro[7] else ''
+                    nav_dict['supplierName'] = pro[8] if pro[8] else ''
+                    nav_dict['productScale'] = pro[9] if pro[9] else ''
+                    nav_dict['productStat'] = pro[10] if pro[10] else ''
+                    nav_dict['hyComment'] = pro[11] if pro[11] else ''
+                    nav_dict['productStartDate'] = str(pro[12]) if pro[12] else ''
+                    nav_dict['deadlineType'] = pro[13] if pro[13] else ''
+                    nav_dict['nav'] = pro[14] if pro[14] else ''
+                    nav_dict['navTime'] = datetime.datetime.strptime(pro[15], date_pattern2).strftime(date_pattern1) \
+                        if pro[15] else ''
+                    nav_dict['accnav'] = pro[16] if pro[16] else ''
+                    nav_dict['hotStatus'] = pro[17] if pro[17] else ''
+                    coll_prod_list.append(nav_dict)
+        return coll_prod_list

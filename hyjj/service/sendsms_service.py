@@ -11,6 +11,7 @@ from ..models.model import CustomerSms
 from ..common.constant import STATE_INVALID, STATE_VALID, TIMEOUT_CODE
 from ..common.redisutil import create_redis
 from ..common.loguntil import HyLog
+from ..common.dateutils import date_now
 
 
 class SendSmsService:
@@ -23,6 +24,7 @@ class SendSmsService:
             sms.sms_content = sms_content
             sms.phone = phone
             sms.create_user = create_user
+            sms.create_time = date_now()
             sms.state = STATE_VALID
             dbs.add(sms)
         except Exception as e:
