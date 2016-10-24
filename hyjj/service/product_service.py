@@ -129,10 +129,10 @@ class ProductService:
             .order_by(CmsProductNav.productId.desc(), CmsProductNav.navTime.desc()).subquery()
         nav_all = dbms.query(nav1).group_by(nav1.c.productId).subquery()
         product = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
-                         CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
-                         CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
-                         CmsProduct.productStartDate, CmsProduct.deadlineType,
-                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus) \
+                             CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
+                             CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat,
+                             CmsProduct.hyComment, CmsProduct.productStartDate, CmsProduct.deadlineType,
+                             nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus) \
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId) \
             .filter(CmsProduct.useStat == '1')\
             .filter(CmsProduct.isDeleted == '0')\
