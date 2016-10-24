@@ -400,10 +400,11 @@ class MobileView(BaseUtil):
         dbms = self.request.mysqldbsession
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
+        page_no = self.request.POST.get('pageNo', 0)
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id)
+            col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id, page_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,

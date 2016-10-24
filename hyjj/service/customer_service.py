@@ -7,7 +7,7 @@ __mtime__ = 2016/10/14
 
 import datetime
 from ..models.model import CustomerInfo, CustomerCollProd
-from ..common.constant import STATE_INVALID, STATE_VALID
+from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 from ..service.product_service import ProductService
@@ -69,11 +69,12 @@ class CustomerService:
         return ''
 
     @staticmethod
-    def search_coll_product(dbs, dbms, wechat_id):
+    def search_coll_product(dbs, dbms, wechat_id, page_no):
+        page_offset = int(page_no) * 10
         coll_prod_list = []
         coll_prods = dbs.query(CustomerCollProd)\
             .filter(CustomerCollProd.cust_id == wechat_id)\
-            .order_by(CustomerCollProd.create_time.desc()).all()
+            .order_by(CustomerCollProd.create_time.desc()).offset(page_offset).limit(PAGE_SIZE)
         if coll_prods:
             for coll_prod in coll_prods:
                 pro = ProductService.search_col_product(dbms, coll_prod.prod_id)
