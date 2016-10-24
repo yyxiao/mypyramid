@@ -4,10 +4,7 @@
 __author__ = xyy
 __mtime__ = 2016/10/13
 """
-import redis
-import json
 from pyramid.view import view_config
-from datetime import datetime
 from ..common.sendsms import send
 from ..common import constant
 from ..common.jsonutils import other_response
@@ -195,7 +192,7 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            risk_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+            error_msg, risk_level, risk_msg = self.riskService.search_customer_risk_level(dbs, wechat_id)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -205,7 +202,8 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'riskLevel': risk_level
+                'riskLevel': risk_level,
+                'riskMessage': risk_msg
             }
         self.hyLog.log_in(self.request.client_addr, '',
                           ('riskSearch failed ' + error_msg if error_msg else 'riskSearch success'),
@@ -350,6 +348,75 @@ class MobileView(BaseUtil):
             }
         self.hyLog.log_in(self.request.client_addr, '',
                           ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='productBook', renderer='json')
+    def product_book(self):
+        """
+        产品预约
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        product_id = self.request.POST.get('productId', 0)
+        phone = self.request.POST.get('phone', 0)
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        elif not product_id:
+            error_msg = '产品ID不能为空！'
+        elif not phone:
+            error_msg = '联系电话不能为空！'
+        if not error_msg:
+            coll_state = self.customerService.book_product_by_id(dbs, wechat_id, product_id, phone)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'isCollect': coll_state
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),
+                          'mobile')
+        resp = other_response(json_a=json_a)
+        return resp
+
+    @view_config(route_name='myCollect', renderer='json')
+    def my_collect(self):
+        """
+        我的收藏
+        :param self:
+        :return:
+        """
+        error_msg = ''
+        dbms = self.request.mysqldbsession
+        dbs = self.request.dbsession
+        wechat_id = self.request.POST.get('wechatId', '')
+        if not wechat_id:
+            error_msg = '用户wechat_id不能为空！'
+        if not error_msg:
+            col_list = self.productService.search_products(dbms, wechat_id)
+        if error_msg:
+            json_a = {
+                'returnCode': constant.CODE_ERROR,
+                'returnMsg': error_msg
+            }
+        else:
+            json_a = {
+                'returnCode': constant.CODE_SUCCESS,
+                'returnMsg': '',
+                'collectList': col_list
+            }
+        self.hyLog.log_in(self.request.client_addr, '',
+                          ('myCollect failed ' + error_msg if error_msg else 'myCollect success'),
                           'mobile')
         resp = other_response(json_a=json_a)
         return resp

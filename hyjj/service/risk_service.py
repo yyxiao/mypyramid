@@ -6,7 +6,7 @@ __mtime__ = 2016/10/14
 """
 
 from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk
-from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, RISK_FIRST, RISK_SECOND, RISK_THIRD
+from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG
 from ..common.dateutils import date_now
 from ..common.loguntil import HyLog
 
@@ -81,10 +81,16 @@ class RiskService:
 
     @staticmethod
     def search_customer_risk_level(dbs, customer_id):
+        error_msg = ''
+        risk_level = '00'
         customer_risk = dbs.query(CustomerRisk.risk_level)\
             .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
-        risk_level = customer_risk[0] if customer_risk[0] else ''
-        return risk_level
+        if customer_risk:
+            risk_level = customer_risk[0] if customer_risk[0] else ''
+        else:
+            error_msg = '该用户未进行风险评测！'
+        risk_msg = RISK_MSG[risk_level]
+        return error_msg, risk_level, risk_msg
 
     @staticmethod
     def __search_answer_score(dbs, question_id, selection_no):
