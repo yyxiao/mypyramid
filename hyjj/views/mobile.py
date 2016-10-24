@@ -404,7 +404,7 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id, page_no)
+            pro_col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id, page_no)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -414,7 +414,7 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'collectList': col_list
+                'productList': pro_col_list
             }
         self.hyLog.log_in(self.request.client_addr, '',
                           ('myCollect failed ' + error_msg if error_msg else 'myCollect success'),

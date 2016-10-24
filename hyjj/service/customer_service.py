@@ -70,6 +70,14 @@ class CustomerService:
 
     @staticmethod
     def search_coll_product(dbs, dbms, wechat_id, page_no):
+        """
+        查找收藏产品
+        :param dbs:
+        :param dbms:
+        :param wechat_id:
+        :param page_no:
+        :return:
+        """
         page_offset = int(page_no) * 10
         coll_prod_list = []
         coll_prods = dbs.query(CustomerCollProd)\
