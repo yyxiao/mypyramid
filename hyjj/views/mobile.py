@@ -108,7 +108,8 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'isRiskAssess': is_risk
+                'isRiskAssess': is_risk,
+                'custId': custid
             }
         self.hyLog.log_in(self.request.client_addr, '', ('accountBinding failed ' + error_msg if error_msg
                                                          else 'sendCode success'), 'mobile')

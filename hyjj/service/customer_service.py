@@ -24,6 +24,7 @@ class CustomerService:
             customer = dbs.query(CustomerInfo).filter(CustomerInfo.phone == phone).first()
             if not customer:
                 customer = CustomerInfo()
+                customer.create_time = date_now()
             customer.cust_id = cust_id
             customer.indiinst_flag = indiinst_flag
             customer.openid = openid
@@ -32,7 +33,6 @@ class CustomerService:
             customer.risk_level = risk_level
             customer.risk_expi_date = date_now()
             customer.create_user = create_user
-            customer.create_time = date_now()
             customer.state = STATE_VALID
             dbs.add(customer)
             dbs.flush()

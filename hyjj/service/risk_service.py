@@ -4,10 +4,11 @@
 __author__ = xyy
 __mtime__ = 2016/10/14
 """
-
+import json
+import urllib.request
 from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk
 from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, \
-    RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL
+    RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL, AUTH_KEY, URL_RISK_EVAL
 from ..common.dateutils import date_now
 from ..common.loguntil import HyLog
 
@@ -44,7 +45,6 @@ class RiskService:
         return ans_list
 
     def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, create_user='xyy'):
-        # TODO 调用接口保存用户证件类型、号码
         risk_answer_dict = eval(risk_answers)
         score = 0  # 评测得分
         risk_type = RISK_FIRST
@@ -76,6 +76,8 @@ class RiskService:
             customer_risk.create_time = date_now()
             dbs.add(customer_risk)
             dbs.flush()
+            # 调用接口保存用户证件类型、号码
+            self.__risk_eval(wechat_id, type, cert_type, cert_no, risk_type)
         except Exception as e:
             HyLog.log_error(e)
         return risk_type
@@ -103,3 +105,19 @@ class RiskService:
         if not ans:
             return 0
         return ans[0]
+
+    @staticmethod
+    def __risk_eval(custid, indiinstflag, certtype, certno, risklevel):
+        data = {
+            'authKey': AUTH_KEY,
+            'custid': custid,
+            'indiinstflag': indiinstflag,
+            'certtype': certtype,
+            'certno': certno,
+            'risklevel': risklevel
+        }
+        data = urllib.parse.urlencode(data).encode()
+        with urllib.request.urlopen(URL_RISK_EVAL, data) as f:
+            crm_msg = f.read().decode()
+        crm = json.loads(crm_msg)
+        return crm
