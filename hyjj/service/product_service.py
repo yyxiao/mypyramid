@@ -31,7 +31,7 @@ class ProductService:
         elif nav_type == NAV_TYPE_4:
             start_year = date_now()[0:4] + '/01/01'
             navs = navs.filter(CmsProductNav.navTime > start_year)
-        navs = navs.all()
+        navs = navs.order_by(CmsProductNav.navTime).all()
         for nav in navs:
             nav_dict = dict()
             nav_dict['id'] = nav.id if nav.id else ''
