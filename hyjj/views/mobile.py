@@ -192,7 +192,7 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            error_msg, risk_level, risk_msg = self.riskService.search_customer_risk_level(dbs, wechat_id)
+            error_msg, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -203,7 +203,8 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
                 'riskLevel': risk_level,
-                'riskMessage': risk_msg
+                'riskMessage': risk_msg,
+                'riskType': risk_type_level
             }
         self.hyLog.log_in(self.request.client_addr, '',
                           ('riskSearch failed ' + error_msg if error_msg else 'riskSearch success'),
