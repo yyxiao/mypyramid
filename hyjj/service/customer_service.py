@@ -9,7 +9,7 @@ import datetime
 import json
 import urllib.request
 from ..models.model import CustomerInfo, CustomerCollProd
-from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY
+from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY, URL_PROD_OFFER
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 from ..service.product_service import ProductService
@@ -66,9 +66,19 @@ class CustomerService:
             return ''
 
     @staticmethod
-    def book_product_by_id(dbs, wechat_id, product_id, phone, create_user='xyy'):
-        # TODO 调用CRM产品预约接口
-        return ''
+    def book_product_by_id(wechat_id, product_name, phone, create_user='xyy'):
+        # 调用CRM产品预约接口
+        data = {
+            'authKey': AUTH_KEY,
+            'custid': wechat_id,
+            'fundname': product_name,
+            'phone': phone
+        }
+        data = urllib.parse.urlencode(data).encode()
+        with urllib.request.urlopen(URL_PROD_OFFER, data) as f:
+            crm_msg = f.read().decode()
+        # crm = json.loads(crm_msg)
+        # return ''
 
     @staticmethod
     def search_coll_product(dbs, dbms, wechat_id, page_no):

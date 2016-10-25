@@ -38,7 +38,7 @@ class MobileView(BaseUtil):
             num = int(num) if num else 0
             if num <= 9:
                 self.sendSmsService.add_code_redis(user_phone, code, redis_host)
-                self.sendSmsService.add_ip_no_redis(self.request.client_addr, num + 1, redis_host)
+                self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(num), redis_host)
                 send(user_phone, content)
                 error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
         if error_msg:
@@ -370,18 +370,17 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
-        dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
-        product_id = self.request.POST.get('productId', 0)
         phone = self.request.POST.get('phone', 0)
+        pro_name = self.request.POST.get('proName', '')
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
-        elif not product_id:
+        elif not pro_name:
             error_msg = '产品ID不能为空！'
         elif not phone:
             error_msg = '联系电话不能为空！'
         if not error_msg:
-            coll_state = self.customerService.book_product_by_id(dbs, wechat_id, product_id, phone)
+            self.customerService.book_product_by_id(wechat_id, pro_name, phone)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
@@ -390,8 +389,7 @@ class MobileView(BaseUtil):
         else:
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
-                'returnMsg': '',
-                'isCollect': coll_state
+                'returnMsg': ''
             }
         self.hyLog.log_in(self.request.client_addr, '',
                           ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),

@@ -7,6 +7,7 @@ __mtime__ = 2016/10/13
 
 import random
 import string
+import time
 from ..models.model import CustomerSms
 from ..common.constant import STATE_INVALID, STATE_VALID, TIMEOUT_CODE
 from ..common.redisutil import create_redis
@@ -36,17 +37,13 @@ class SendSmsService:
     def add_code_redis(phone, code, redis_host):
         r = create_redis(redis_host)
         r.set(phone, code)
-        # 设置过期失效时间
         r.expire(phone, TIMEOUT_CODE)
 
     @staticmethod
     def add_ip_no_redis(ip, num, redis_host):
-        # pool = redis.ConnectionPool(host=redis_host, port=6379, db=0)
-        # r = redis.StrictRedis(connection_pool=pool)
         r = create_redis(redis_host)
         r.set(ip, num)
-        # 设置过期失效时间
-        r.expire(ip, TIMEOUT_CODE)
+        r.expireat(ip, int(time.mktime(time.strptime(date_now('%Y-%m-%d 23:59:50'), '%Y-%m-%d %H:%M:%S'))))
 
     @staticmethod
     def make_random(length):
