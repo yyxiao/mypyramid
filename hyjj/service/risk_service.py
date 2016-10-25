@@ -84,7 +84,6 @@ class RiskService:
     def search_customer_risk_level(dbs, customer_id):
         error_msg = ''
         risk_level = '00'
-        riskType = ''
         customer_risk = dbs.query(CustomerRisk.risk_level)\
             .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
         if customer_risk:

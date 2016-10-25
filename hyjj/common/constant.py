@@ -41,3 +41,10 @@ RISK_MSG = {'00': '保守型:您的投资目标是寻求资本的保值，其次
 RISK_TYPE_LEVEL = {'00': '低风险',
                    '01': '中风险,低风险',
                    '02': '高风险,中风险,低风险'}
+
+AUTH_KEY = 'E10ADC3949BA59ABBE56E057F20F883E'
+
+URL_COUNT_BIND = 'http://10.11.11.27:8080/hycrm/wechat/countBind'
+URL_RISK_EVAL = 'http://10.11.11.27:8080/hycrm/wechat/riskEval'
+URL_PROD_OFFER = 'http://10.11.11.27:8080/hycrm/wechat/prodOffer'
+

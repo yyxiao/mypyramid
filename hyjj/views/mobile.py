@@ -82,19 +82,27 @@ class MobileView(BaseUtil):
         if not error_msg:
             redis_host = self.request.registry.settings['redis.sessions.host']
             r = create_redis(redis_host)
-            random_code = r.get(user_phone)
-            random_code = int(random_code) if random_code else 0
-            if random_code != int(verification_code):
-                error_msg = '验证码有误请重新输入！'
-                error_code = constant.CODE_WRONG
+            user_info = self.customerService.count_bind(user_phone, user_name)
+            if not user_info:
+                error_msg = 'crm服务连接错误！'
             else:
-                self.customerService.add_customer(dbs, cust_id='a', openid=wechat_id, indiinst_flag='a', cust_name='b',
-                                                  phone=user_phone, risk_level=1)
+                random_code = r.get(user_phone)
+                random_code = int(random_code) if random_code else 0
+                if random_code != int(verification_code):
+                    error_msg = '验证码有误请重新输入！'
+                    error_code = constant.CODE_WRONG
+                else:
+                    custid = user_info['objects']['custid']
+                    indiinstflag = user_info['objects']['indiinstflag']
+                    risklevel = user_info['objects']['risklevel']
+                    is_risk = 1 if risklevel else 0
+                    self.customerService.add_customer(dbs, cust_id=custid, openid=wechat_id,
+                                                      indiinst_flag=indiinstflag, cust_name=user_name,
+                                                      phone=user_phone, risk_level=risklevel)
         if error_msg:
             json_a = {
                 'returnCode': error_code,
                 'returnMsg': error_msg,
-                'isRiskAssess': is_risk
             }
         else:
             json_a = {

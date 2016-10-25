@@ -6,8 +6,10 @@ __mtime__ = 2016/10/14
 """
 
 import datetime
+import json
+import urllib.request
 from ..models.model import CustomerInfo, CustomerCollProd
-from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE
+from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 from ..service.product_service import ProductService
@@ -109,3 +111,16 @@ class CustomerService:
                     nav_dict['hotStatus'] = pro[17] if pro[17] else ''
                     coll_prod_list.append(nav_dict)
         return coll_prod_list
+
+    @staticmethod
+    def count_bind(phone, realname):
+        data = {
+            'authKey': AUTH_KEY,
+            'phone': phone,
+            'realname': realname
+        }
+        data = urllib.parse.urlencode(data).encode()
+        with urllib.request.urlopen(URL_COUNT_BIND, data) as f:
+            crm_msg = f.read().decode()
+        crm = json.loads(crm_msg)
+        return crm
