@@ -17,8 +17,7 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'waitress',
-    'pyramid_redis_sessions',
-    'mysql-connector-python'
+    'pyramid_redis_sessions'
     ]
 
 tests_require = [
