@@ -18,7 +18,7 @@ from ..service.product_service import ProductService
 class CustomerService:
 
     @staticmethod
-    def add_customer(dbs, cust_id, indiinst_flag, openid, cust_name, phone, risk_level, create_user='xyy'):
+    def add_customer(dbs, cust_id, indiinst_flag, cust_name, phone, risk_level, create_user='xyy'):
         msg = ''
         try:
             customer = dbs.query(CustomerInfo).filter(CustomerInfo.phone == phone).first()
@@ -27,7 +27,7 @@ class CustomerService:
                 customer.create_time = date_now()
             customer.cust_id = cust_id
             customer.indiinst_flag = indiinst_flag
-            customer.openid = openid
+            # customer.openid = openid
             customer.cust_name = cust_name
             customer.phone = phone
             customer.risk_level = risk_level

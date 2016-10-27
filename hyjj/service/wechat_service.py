@@ -42,11 +42,11 @@ class Wechat:
         return url_response.read()
 
 
-token = Wechat.access_token()
+# token = Wechat.access_token()
 # cope = Wechat.authorize()
 # code = Wechat.code_token()
 # 转为json输出
 # print(json.loads(token))
-print(eval(token))
-if token:
-    print("获取成功")
+# print(eval(token))
+# if token:
+#     print("获取成功")
