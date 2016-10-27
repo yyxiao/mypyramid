@@ -22,39 +22,45 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
-        dbs = self.request.dbsession
-        user_phone = self.request.POST.get('phone', '')
-        user_name = self.request.POST.get('name', '')
-        if not user_phone:
-            error_msg = '用户手机不能为空！'
-        elif not user_name:
-            error_msg = '用户姓名不能为空！'
-        if not error_msg:
-            code = self.sendSmsService.make_random(6)
-            content = constant.SMS_DESC % (user_name, code)
-            redis_host = self.request.registry.settings['redis.sessions.host']
-            r = create_redis(redis_host)
-            num = r.get(self.request.client_addr)
-            num = int(num) if num else 0
-            if num <= 9:
-                self.sendSmsService.add_code_redis(user_phone, code, redis_host)
-                self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(num), redis_host)
-                send(user_phone, content)
-                error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
-        if error_msg:
-            json_a = {
-                'returnCode': constant.CODE_ERROR,
-                'returnMsg': error_msg
-            }
-        else:
-            json_a = {
-                'returnCode': constant.CODE_SUCCESS,
-                'returnMsg': ''
-            }
-        self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' +
-                                                         error_msg if error_msg else 'sendCode success'), 'mobile')
-        resp = other_response(json_a=json_a)
-        return resp
+        code = self.request.GET.get('code')
+        code1 = self.request.POST.get('code')
+        code2 = self.request.get('code')
+        print(code)
+        print(code1)
+        print(code2)
+        # dbs = self.request.dbsession
+        # user_phone = self.request.POST.get('phone', '')
+        # user_name = self.request.POST.get('name', '')
+        # if not user_phone:
+        #     error_msg = '用户手机不能为空！'
+        # elif not user_name:
+        #     error_msg = '用户姓名不能为空！'
+        # if not error_msg:
+        #     code = self.sendSmsService.make_random(6)
+        #     content = constant.SMS_DESC % (user_name, code)
+        #     redis_host = self.request.registry.settings['redis.sessions.host']
+        #     r = create_redis(redis_host)
+        #     num = r.get(self.request.client_addr)
+        #     num = int(num) if num else 0
+        #     if num <= 9:
+        #         self.sendSmsService.add_code_redis(user_phone, code, redis_host)
+        #         self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(num), redis_host)
+        #         send(user_phone, content)
+        #         error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
+        # if error_msg:
+        #     json_a = {
+        #         'returnCode': constant.CODE_ERROR,
+        #         'returnMsg': error_msg
+        #     }
+        # else:
+        #     json_a = {
+        #         'returnCode': constant.CODE_SUCCESS,
+        #         'returnMsg': ''
+        #     }
+        # self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' +
+        #                                                  error_msg if error_msg else 'sendCode success'), 'mobile')
+        # resp = other_response(json_a=json_a)
+        # return resp
 
     @view_config(route_name='accountBinding', renderer='json')
     def account_binding(self):
