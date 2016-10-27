@@ -198,10 +198,10 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            error_msg, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+            error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:
@@ -263,6 +263,8 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
+        dbs = self.request.dbsession
         dbms = self.request.mysqldbsession
         wechat_id = self.request.POST.get('wechatId', '')
         page_no = self.request.POST.get('pageNo', 0)
@@ -272,10 +274,12 @@ class MobileView(BaseUtil):
         elif not page_no:
             error_msg = '页码不能为空！'
         if not error_msg:
+            error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(
+                dbs, wechat_id)
             pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:
@@ -298,6 +302,7 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
         dbs = self.request.dbsession
         dbms = self.request.mysqldbsession
         wechat_id = self.request.POST.get('wechatId', '')
@@ -307,10 +312,12 @@ class MobileView(BaseUtil):
         elif not product_id:
             error_msg = '产品ID不能为空！'
         if not error_msg:
+            error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(
+                dbs, wechat_id)
             product = self.productService.search_product_info(dbs, dbms, wechat_id, product_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:

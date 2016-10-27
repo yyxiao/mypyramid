@@ -7,7 +7,7 @@ __mtime__ = 2016/10/14
 import json
 import urllib.request
 from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk
-from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, \
+from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, CODE_ERROR, CODE_NO_RISK, \
     RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL, AUTH_KEY, URL_RISK_EVAL
 from ..common.dateutils import date_now
 from ..common.loguntil import HyLog
@@ -85,16 +85,18 @@ class RiskService:
     @staticmethod
     def search_customer_risk_level(dbs, customer_id):
         error_msg = ''
+        error_code = CODE_ERROR
         risk_level = '00'
         customer_risk = dbs.query(CustomerRisk.risk_level)\
             .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
         if customer_risk:
             risk_level = customer_risk[0] if customer_risk[0] else ''
         else:
+            error_code = CODE_NO_RISK
             error_msg = '该用户未进行风险评测！'
         risk_msg = RISK_MSG[risk_level]
         risk_type_level = RISK_TYPE_LEVEL[risk_level]
-        return error_msg, risk_level, risk_msg, risk_type_level
+        return error_msg, error_code, risk_level, risk_msg, risk_type_level
 
     @staticmethod
     def __search_answer_score(dbs, question_id, selection_no):
