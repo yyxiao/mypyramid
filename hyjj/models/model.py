@@ -39,7 +39,7 @@ class CustomerRisk(Base):
     id = Column(INT, Sequence('customer_risk_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     evaluating_time = Column(DateTime)                  # 评测时间
-    cust_answers = Column(VARCHAR(60))                  # 风险题目答案
+    cust_answers = Column(VARCHAR(200))                  # 风险题目答案
     score = Column(INT)                                 # 答卷得分
     risk_level = Column(VARCHAR(6))                        # 风险等级
     remark = Column(VARCHAR(100))                       # 备注
