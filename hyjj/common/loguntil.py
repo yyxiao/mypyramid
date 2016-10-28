@@ -12,7 +12,7 @@ class HyLog(object):
     operator_logger = logging.getLogger(__name__)
 
     @staticmethod
-    def log_in(ip, user_account, msg='', client='web'):
+    def log_in(ip, msg='', client='web'):
         HyLog.log_info('[login]['+client+'] ip:' + ip + ' login ' + msg + '.')
 
     @staticmethod
