@@ -8,7 +8,8 @@ __mtime__ = 2016/10/14
 from sqlalchemy import or_
 from ..models.product_model import CmsProductNav, CmsProduct
 from ..models.model import CustomerCollProd
-from ..common.constant import NAV_TYPE_1, NAV_TYPE_2, NAV_TYPE_3, NAV_TYPE_4, PAGE_SIZE
+from ..common.constant import NAV_TYPE_1, NAV_TYPE_2, NAV_TYPE_3, NAV_TYPE_4, PAGE_SIZE, \
+    RISK_FIRST, RISK_SECOND, RISK_THIRD
 from ..common.dateutils import date_now, get_predate_days, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 import datetime
@@ -47,7 +48,7 @@ class ProductService:
         return nav_list
 
     @staticmethod
-    def search_products(dbs, wechat_id, page_no, search_key):
+    def search_products(dbs, wechat_id, page_no, search_key, risk_level):
         page_offset = int(page_no) * 10
         pro_list = []
         nav1 = dbs.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav)\
@@ -60,6 +61,10 @@ class ProductService:
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+        if risk_level == RISK_FIRST:
+            pros = pros.filter(CmsProduct.riskLv == '1')
+        elif risk_level == RISK_SECOND:
+            pros = pros.filter(CmsProduct.riskLv <= '3')
         if search_key:
             pros = pros.filter(or_(CmsProduct.fullName.like('%' + search_key + '%'),
                                    CmsProduct.name.like('%' + search_key + '%')))

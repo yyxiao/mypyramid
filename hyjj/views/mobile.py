@@ -278,7 +278,7 @@ class MobileView(BaseUtil):
         if not error_msg:
             error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(
                 dbs, wechat_id)
-            pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key)
+            pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key, risk_level)
         if error_msg:
             json_a = {
                 'returnCode': error_code,
