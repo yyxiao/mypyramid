@@ -77,7 +77,7 @@ class RiskService:
             dbs.add(customer_risk)
             dbs.flush()
             # 调用接口保存用户证件类型、号码
-            self.__risk_eval(wechat_id, type, cert_type, cert_no, risk_type)
+            self.__risk_eval(wechat_id, type, cert_type, cert_no, risk_type, risk_answers, score)
         except Exception as e:
             HyLog.log_error(e)
         return risk_type
@@ -109,14 +109,17 @@ class RiskService:
         return ans[0]
 
     @staticmethod
-    def __risk_eval(custid, indiinstflag, certtype, certno, risklevel):
+    def __risk_eval(custid, indiinstflag, certtype, certno, risklevel, riskAnswer, riskScore):
         data = {
             'authKey': AUTH_KEY,
             'custid': custid,
             'indiinstflag': indiinstflag,
             'certtype': certtype,
             'certno': certno,
-            'risklevel': risklevel
+            'risklevel': risklevel,
+            'riskanswer': riskAnswer,
+            'riskscore': riskScore,
+            'riskdate': date_now()
         }
         data = urllib.parse.urlencode(data).encode()
         with urllib.request.urlopen(URL_RISK_EVAL, data) as f:
