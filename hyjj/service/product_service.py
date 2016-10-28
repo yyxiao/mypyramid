@@ -128,7 +128,7 @@ class ProductService:
             nav_dict['manager'] = pro[14] if pro[14] else ''
             nav_dict['riskLv'] = pro[15] if pro[15] else ''
             nav_dict['hotStatus'] = pro[16] if pro[16] else ''
-            nav_dict['publishStartDate'] = pro[17] if pro[17] else ''
+            nav_dict['publishStartDate'] = str(pro[17]) if pro[17] else ''
             nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
             nav_dict['nav'] = pro[18] if pro[18] else ''
             nav_dict['navTime'] = datetime.datetime.strptime(pro[19], date_pattern2).strftime(date_pattern1) \
