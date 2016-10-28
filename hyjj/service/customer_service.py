@@ -93,7 +93,7 @@ class CustomerService:
         page_offset = int(page_no) * 10
         coll_prod_list = []
         coll_prods = dbs.query(CustomerCollProd)\
-            .filter(CustomerCollProd.cust_id == wechat_id)\
+            .filter(CustomerCollProd.cust_id == wechat_id).filter(CustomerCollProd.state == STATE_VALID)\
             .order_by(CustomerCollProd.create_time.desc()).offset(page_offset).limit(PAGE_SIZE)
         if coll_prods:
             for coll_prod in coll_prods:
