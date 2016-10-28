@@ -91,11 +91,16 @@ class ProductService:
 
     @staticmethod
     def search_product_info(dbs, dbms, wechat_id, product_id):
+        nav1 = dbs.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav) \
+            .order_by(CmsProductNav.productId.desc(), CmsProductNav.navTime.desc()).subquery()
+        nav_all = dbs.query(nav1).group_by(nav1.c.productId).subquery()
         pro = dbms.query(CmsProduct.id, CmsProduct.productNo, CmsProduct.fullName, CmsProduct.name,
                          CmsProduct.type, CmsProduct.minDeadline, CmsProduct.maxDeadline, CmsProduct.supplierId,
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
                          CmsProduct.productStartDate, CmsProduct.deadlineType, CmsProduct.manager, CmsProduct.riskLv,
-                         CmsProduct.hotStatus, CmsProduct.publishStartDate)\
+                         CmsProduct.hotStatus, CmsProduct.publishStartDate,
+                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
+            .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.id == product_id).filter(CmsProduct.isDeleted == '0').first()
         cust_pro = dbs.query(CustomerCollProd)\
             .filter(CustomerCollProd.prod_id == product_id).filter(CustomerCollProd.cust_id == wechat_id).first()
@@ -120,6 +125,10 @@ class ProductService:
             nav_dict['hotStatus'] = pro[16] if pro[16] else ''
             nav_dict['publishStartDate'] = pro[17] if pro[17] else ''
             nav_dict['isCollect'] = cust_pro.state if cust_pro else '0'
+            nav_dict['nav'] = pro[18] if pro[18] else ''
+            nav_dict['navTime'] = datetime.datetime.strptime(pro[19], date_pattern2).strftime(date_pattern1) \
+                if pro[19] else ''
+            nav_dict['accnav'] = pro[20] if pro[20] else ''
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict
 
