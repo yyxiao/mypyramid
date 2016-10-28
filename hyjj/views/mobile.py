@@ -51,7 +51,7 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': ''
             }
-        self.hyLog.log_in(self.request.client_addr, '', ('sendCode failed ' +
+        self.hyLog.log_in(self.request.client_addr, ('sendCode failed ' +
                                                          error_msg if error_msg else 'sendCode success'), 'mobile')
         resp = other_response(json_a=json_a)
         return resp
@@ -108,7 +108,7 @@ class MobileView(BaseUtil):
                 'isRiskAssess': is_risk,
                 'wechatId': custid
             }
-        self.hyLog.log_in(self.request.client_addr, '', ('accountBinding failed ' + error_msg if error_msg
+        self.hyLog.log_in(self.request.client_addr, ('accountBinding failed ' + error_msg if error_msg
                                                          else 'sendCode success'), 'mobile')
         resp = other_response(json_a=json_a)
         return resp
@@ -139,7 +139,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'questionList': questions
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('riskQuestion failed ' + error_msg if error_msg else 'riskQuestion success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -179,7 +179,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'riskLevel': risk_level
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('riskAssess failed ' + error_msg if error_msg else 'riskAssess success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -212,7 +212,7 @@ class MobileView(BaseUtil):
                 'riskMessage': risk_msg,
                 'riskType': risk_type_level
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('riskSearch failed ' + error_msg if error_msg else 'riskSearch success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -249,7 +249,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'navList': nav_list
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('navList failed ' + error_msg if error_msg else 'navList success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -288,7 +288,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'productList': pro_list
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('productList failed ' + error_msg if error_msg else 'productList success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -326,7 +326,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'product': product
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('productDetail failed ' + error_msg if error_msg else 'productDetail success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -360,7 +360,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'isCollect': coll_state
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -395,7 +395,7 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': ''
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('productCollect failed ' + error_msg if error_msg else 'productCollect success'),
                           'mobile')
         resp = other_response(json_a=json_a)
@@ -428,7 +428,7 @@ class MobileView(BaseUtil):
                 'returnMsg': '',
                 'productList': pro_col_list
             }
-        self.hyLog.log_in(self.request.client_addr, '',
+        self.hyLog.log_in(self.request.client_addr,
                           ('myCollect failed ' + error_msg if error_msg else 'myCollect success'),
                           'mobile')
         resp = other_response(json_a=json_a)

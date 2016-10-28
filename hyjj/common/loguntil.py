@@ -13,7 +13,7 @@ class HyLog(object):
 
     @staticmethod
     def log_in(ip, user_account, msg='', client='web'):
-        HyLog.log_info('[login]['+client+'] ip:' + ip + ' \"' + user_account + '\" login ' + msg + '.')
+        HyLog.log_info('[login]['+client+'] ip:' + ip + ' login ' + msg + '.')
 
     @staticmethod
     def log_out(ip, user_account, client='web'):
