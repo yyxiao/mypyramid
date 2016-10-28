@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>test wechat</title>
     <script type="text/javascript">
-        alert('abc');
-        alert(location.search);
+        var Request = new Object();
+        Request = GetRequest();
+        var a = eval(location.search);
+        var b = Request['code']
+        alert(a);
+        alert(b);
     </script>
 </head>
 <body>
