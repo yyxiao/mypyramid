@@ -86,7 +86,7 @@ class RiskService:
     def search_customer_risk_level(dbs, customer_id):
         error_msg = ''
         error_code = CODE_ERROR
-        risk_level = '00'
+        risk_level = '01'
         customer_risk = dbs.query(CustomerRisk.risk_level)\
             .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
         if customer_risk:
