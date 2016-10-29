@@ -68,7 +68,7 @@ class RiskService:
         try:
             customer_risk = CustomerRisk()
             customer_risk.cust_answers = risk_answers
-            customer_risk.cust_id = cust_id
+            customer_risk.cust_id = wechat_id
             customer_risk.evaluating_time = date_now()
             customer_risk.score = score
             customer_risk.risk_level = risk_type
@@ -78,7 +78,7 @@ class RiskService:
             dbs.add(customer_risk)
             dbs.flush()
             # 调用接口保存用户证件类型、号码
-            self.__risk_eval(wechat_id, type, cert_type, cert_no, risk_type, risk_answers, score)
+            self.__risk_eval(cust_id, type, cert_type, cert_no, risk_type, risk_answers, score)
         except Exception as e:
             HyLog.log_error(e)
         return risk_type
