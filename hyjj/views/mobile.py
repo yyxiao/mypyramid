@@ -34,15 +34,15 @@ class MobileView(BaseUtil):
             content = constant.SMS_DESC % (user_name, code)
             redis_host = self.request.registry.settings['redis.sessions.host']
             r = create_redis(redis_host)
-            num = r.get(self.request.client_addr)
-            num = int(num) if num else 0
-            if num:
+            # num = r.get(self.request.client_addr)
+            # num = int(num) if num else 0
+            # if num:
             # if num <= 9:
-                self.sendSmsService.add_code_redis(user_phone, code, redis_host)
-                self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(1), redis_host)
-                # self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(num), redis_host)
-                send(user_phone, content)
-                error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
+            self.sendSmsService.add_code_redis(user_phone, code, redis_host)
+            self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(1), redis_host)
+            # self.sendSmsService.add_ip_no_redis(self.request.client_addr, (lambda x: x+1)(num), redis_host)
+            send(user_phone, content)
+            error_msg = self.sendSmsService.add_sms(dbs, sms_content=content, phone=user_phone)
         if error_msg:
             json_a = {
                 'returnCode': constant.CODE_ERROR,
