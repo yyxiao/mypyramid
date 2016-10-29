@@ -62,11 +62,12 @@ class CustomerService:
             return ''
 
     @staticmethod
-    def book_product_by_id(wechat_id, product_name, phone, create_user='xyy'):
+    def book_product_by_id(dbs, wechat_id, product_name, phone, create_user='xyy'):
+        cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
         # 调用CRM产品预约接口
         data = {
             'authKey': AUTH_KEY,
-            'custid': wechat_id,
+            'custid': cust_id,
             'fundname': product_name,
             'phone': phone
         }

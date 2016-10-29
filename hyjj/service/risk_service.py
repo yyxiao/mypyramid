@@ -6,7 +6,7 @@ __mtime__ = 2016/10/14
 """
 import json
 import urllib.request
-from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk
+from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk, CustomerInfo
 from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, CODE_ERROR, CODE_NO_RISK, \
     RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL, AUTH_KEY, URL_RISK_EVAL
 from ..common.dateutils import date_now
@@ -45,6 +45,7 @@ class RiskService:
         return ans_list
 
     def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, create_user='xyy'):
+        cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
         risk_answer_dict = eval(risk_answers)
         score = 0  # 评测得分
         risk_type = RISK_FIRST
@@ -67,7 +68,7 @@ class RiskService:
         try:
             customer_risk = CustomerRisk()
             customer_risk.cust_answers = risk_answers
-            customer_risk.cust_id = wechat_id
+            customer_risk.cust_id = cust_id
             customer_risk.evaluating_time = date_now()
             customer_risk.score = score
             customer_risk.risk_level = risk_type
