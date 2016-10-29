@@ -135,7 +135,7 @@ class CustomerService:
     @staticmethod
     def search_cust_bind(dbs, wechat_id):
         """
-        查找收藏产品
+        该账户是否绑定
         :param dbs:
         :param wechat_id:
         :return:
