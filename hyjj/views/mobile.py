@@ -31,7 +31,7 @@ class MobileView(BaseUtil):
             error_msg = '用户姓名不能为空！'
         if not error_msg:
             code = self.sendSmsService.make_random(6)
-            content = constant.SMS_DESC % (user_name, code)
+            content = constant.SMS_DESC % code
             redis_host = self.request.registry.settings['redis.sessions.host']
             r = create_redis(redis_host)
             # num = r.get(self.request.client_addr)
