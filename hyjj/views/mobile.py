@@ -206,7 +206,7 @@ class MobileView(BaseUtil):
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
-            error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(dbs, wechat_id)
+            error_msg, error_code, risk_level, risk_msg, risk_type_level, indiinst_flag = self.riskService.search_customer_risk_level(dbs, wechat_id)
             error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
         if error_msg:
             json_a = {
@@ -218,6 +218,7 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
                 'riskLevel': risk_level,
+                'indiinstflag': indiinst_flag,
                 'riskMessage': risk_msg,
                 'riskType': risk_type_level
             }

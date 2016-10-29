@@ -84,12 +84,13 @@ class RiskService:
         return risk_type
 
     @staticmethod
-    def search_customer_risk_level(dbs, customer_id):
+    def search_customer_risk_level(dbs, wechat_id):
         error_msg = ''
+        indiinst_flag = dbs.query(CustomerInfo.indiinst_flag).filter(CustomerInfo.id == wechat_id).first()
         error_code = CODE_ERROR
         risk_level = '01'
         customer_risk = dbs.query(CustomerRisk.risk_level)\
-            .filter(CustomerRisk.cust_id == customer_id).order_by(CustomerRisk.create_time.desc()).first()
+            .filter(CustomerRisk.cust_id == wechat_id).order_by(CustomerRisk.create_time.desc()).first()
         if customer_risk:
             risk_level = customer_risk[0] if customer_risk[0] else ''
         else:
@@ -97,7 +98,7 @@ class RiskService:
             error_msg = '该用户未进行风险评测！'
         risk_msg = RISK_MSG[risk_level]
         risk_type_level = RISK_TYPE_LEVEL[risk_level]
-        return error_msg, error_code, risk_level, risk_msg, risk_type_level
+        return error_msg, error_code, risk_level, risk_msg, risk_type_level, indiinst_flag
 
     @staticmethod
     def __search_answer_score(dbs, question_id, selection_no):
