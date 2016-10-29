@@ -9,7 +9,8 @@ import datetime
 import json
 import urllib.request
 from ..models.model import CustomerInfo, CustomerCollProd
-from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY, URL_PROD_OFFER
+from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY, URL_PROD_OFFER, \
+    CODE_BINDING, CODE_ERROR
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 from ..service.product_service import ProductService
@@ -134,3 +135,19 @@ class CustomerService:
             crm_msg = f.read().decode()
         crm = json.loads(crm_msg)
         return crm
+
+    @staticmethod
+    def search_cust_bind(dbs, wechat_id):
+        """
+        查找收藏产品
+        :param dbs:
+        :param wechat_id:
+        :return:
+        """
+        error_code = CODE_ERROR
+        error_msg = ''
+        cust = dbs.query(CustomerInfo).filter(CustomerInfo.cust_id == wechat_id).first()
+        if not cust:
+            error_code = CODE_BINDING
+            error_msg = '该账户未绑定'
+        return error_msg, error_code

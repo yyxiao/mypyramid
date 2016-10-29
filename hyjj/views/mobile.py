@@ -123,6 +123,7 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         type = self.request.POST.get('type', '0')
@@ -130,9 +131,10 @@ class MobileView(BaseUtil):
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
             questions = self.riskService.search_questions(dbs, type)
+            # error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:
@@ -155,6 +157,7 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         risk_answers = self.request.POST.get('riskAnswer', '')
@@ -170,9 +173,10 @@ class MobileView(BaseUtil):
         if not error_msg:
             risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers,
                                                           type, cert_type, cert_no)
+            error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:
@@ -278,6 +282,7 @@ class MobileView(BaseUtil):
         if not error_msg:
             error_msg, error_code, risk_level, risk_msg, risk_type_level = self.riskService.search_customer_risk_level(
                 dbs, wechat_id)
+            error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
             pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key, risk_level)
         if error_msg:
             json_a = {
@@ -411,6 +416,7 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
         dbms = self.request.mysqldbsession
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
@@ -419,9 +425,10 @@ class MobileView(BaseUtil):
             error_msg = '用户wechat_id不能为空！'
         if not error_msg:
             pro_col_list = self.customerService.search_coll_product(dbs, dbms, wechat_id, page_no)
+            error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:
