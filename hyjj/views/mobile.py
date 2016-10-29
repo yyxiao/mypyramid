@@ -17,7 +17,7 @@ class MobileView(BaseUtil):
     @view_config(route_name='sendCode', renderer='json')
     def send_code(self):
         """
-        设备初始化登录
+        发送验证码
         :param self:
         :return:
         """
@@ -72,6 +72,7 @@ class MobileView(BaseUtil):
         user_name = self.request.POST.get('name', '')
         verification_code = self.request.POST.get('verificationCode', '')
         is_risk = 0
+        indiinstflag = 0
         if not user_phone:
             error_msg = '用户手机不能为空！'
         elif not user_name:
@@ -108,7 +109,8 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
                 'isRiskAssess': is_risk,
-                'wechatId': custid
+                'wechatId': custid,
+                'indiinstflag': indiinstflag
             }
         self.hyLog.log_in(self.request.client_addr, ('accountBinding failed ' + error_msg if error_msg
                                                          else 'sendCode success'), 'mobile')
