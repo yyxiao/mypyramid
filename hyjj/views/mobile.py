@@ -72,7 +72,7 @@ class MobileView(BaseUtil):
         user_name = self.request.POST.get('name', '')
         verification_code = self.request.POST.get('verificationCode', '')
         is_risk = 0
-        indiinstflag = 0
+        indiinstflag = ''
         if not user_phone:
             error_msg = '用户手机不能为空！'
         elif not user_name:
@@ -96,7 +96,7 @@ class MobileView(BaseUtil):
                     indiinstflag = user_info['objects']['indiinstflag']
                     risklevel = user_info['objects']['risklevel']
                     is_risk = 1 if risklevel else 0
-                    self.customerService.add_customer(dbs, cust_id=custid,
+                    cust_info_id = self.customerService.add_customer(dbs, cust_id=custid,
                                                       indiinst_flag=indiinstflag, cust_name=user_name,
                                                       phone=user_phone, risk_level=risklevel)
         if error_msg:
@@ -109,7 +109,7 @@ class MobileView(BaseUtil):
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
                 'isRiskAssess': is_risk,
-                'wechatId': custid,
+                'wechatId': cust_info_id,
                 'indiinstflag': indiinstflag
             }
         self.hyLog.log_in(self.request.client_addr, ('accountBinding failed ' + error_msg if error_msg

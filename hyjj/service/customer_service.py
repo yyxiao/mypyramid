@@ -20,27 +20,22 @@ class CustomerService:
 
     @staticmethod
     def add_customer(dbs, cust_id, indiinst_flag, cust_name, phone, risk_level, create_user='xyy'):
-        msg = ''
-        try:
-            customer = dbs.query(CustomerInfo).filter(CustomerInfo.phone == phone).first()
-            if not customer:
-                customer = CustomerInfo()
-                customer.create_time = date_now()
-            customer.cust_id = cust_id
-            customer.indiinst_flag = indiinst_flag
-            # customer.openid = openid
-            customer.cust_name = cust_name
-            customer.phone = phone
-            customer.risk_level = risk_level
-            customer.risk_expi_date = date_now()
-            customer.create_user = create_user
-            customer.state = STATE_VALID
-            dbs.add(customer)
-            dbs.flush()
-        except Exception as e:
-            msg = '新增用户关联记录失败，请核对后重试'
-            HyLog.log_error(e)
-        return msg
+        customer = dbs.query(CustomerInfo).filter(CustomerInfo.phone == phone).first()
+        if not customer:
+            customer = CustomerInfo()
+            customer.create_time = date_now()
+        customer.cust_id = cust_id
+        customer.indiinst_flag = indiinst_flag
+        # customer.openid = openid
+        customer.cust_name = cust_name
+        customer.phone = phone
+        customer.risk_level = risk_level
+        customer.risk_expi_date = date_now()
+        customer.create_user = create_user
+        customer.state = STATE_VALID
+        dbs.add(customer)
+        dbs.flush()
+        return customer.id
 
     @staticmethod
     def collect_product_by_id(dbs, wechat_id, product_id, create_user='xyy'):
