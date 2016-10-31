@@ -31,7 +31,7 @@ class ProductService:
             navs = navs.filter(CmsProductNav.navTime > get_predate_days(date_now(date_pattern1), -365))
         elif nav_type == NAV_TYPE_4:
             start_year = date_now()[0:4] + '/01/01'
-            navs = navs.filter(CmsProductNav.navTime > start_year)
+            navs = navs.filter(CmsProductNav.navTime >= start_year)
         navs = navs.order_by(CmsProductNav.navTime).all()
         for nav in navs:
             nav_dict = dict()
@@ -60,7 +60,7 @@ class ProductService:
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0').filter(CmsProduct.type != 'GD')
         if risk_level == RISK_FIRST:
             pros = pros.filter(CmsProduct.riskLv == '1')
         elif risk_level == RISK_SECOND:
