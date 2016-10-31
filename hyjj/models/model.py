@@ -86,8 +86,6 @@ class CustomerOrderSeq(Base):
     id = Column(INT, Sequence('customer_order_seq_id_seq', schema=HYJJ_SCHEMA), primary_key=True)  # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     prod_id = Column(VARCHAR(20))                       # 产品id
-    prod_name = Column(VARCHAR(60))                     # 产品名称
-    cust_name = Column(VARCHAR(60))                     # 预约客户名称
     phone = Column(VARCHAR(20))                         # 预约电话
     version = Column(VARCHAR(1))                        # 版本号
     create_user = Column(VARCHAR(20))                   # 创建人

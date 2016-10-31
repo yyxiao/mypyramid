@@ -387,21 +387,25 @@ class MobileView(BaseUtil):
         :return:
         """
         error_msg = ''
+        error_code = constant.CODE_ERROR
         dbs = self.request.dbsession
         wechat_id = self.request.POST.get('wechatId', '')
         phone = self.request.POST.get('phone', 0)
+        pro_id = self.request.POST.get('proId', '')
         pro_name = self.request.POST.get('proName', '')
         if not wechat_id:
             error_msg = '用户wechat_id不能为空！'
         elif not pro_name:
-            error_msg = '产品ID不能为空！'
+            error_msg = '产品名称不能为空！'
+        elif not pro_id:
+            error_msg = '产品Id不能为空！'
         elif not phone:
             error_msg = '联系电话不能为空！'
         if not error_msg:
-            self.customerService.book_product_by_id(dbs, wechat_id, pro_name, phone)
+            error_msg, error_code = self.customerService.book_product_by_id(dbs, wechat_id, pro_name, phone, pro_id)
         if error_msg:
             json_a = {
-                'returnCode': constant.CODE_ERROR,
+                'returnCode': error_code,
                 'returnMsg': error_msg
             }
         else:

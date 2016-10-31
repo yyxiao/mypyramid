@@ -8,9 +8,9 @@ __mtime__ = 2016/10/14
 import datetime
 import json
 import urllib.request
-from ..models.model import CustomerInfo, CustomerCollProd
+from ..models.model import CustomerInfo, CustomerCollProd, CustomerOrderSeq
 from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY, URL_PROD_OFFER, \
-    CODE_BINDING, CODE_ERROR
+    CODE_BINDING, CODE_ERROR, CODE_ORDER
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
 from ..service.product_service import ProductService
@@ -62,20 +62,38 @@ class CustomerService:
             return ''
 
     @staticmethod
-    def book_product_by_id(dbs, wechat_id, product_name, phone, create_user='xyy'):
+    def book_product_by_id(dbs, wechat_id, product_name, phone, pro_id, create_user='xyy'):
+        error_msg = ''
+        error_code = CODE_ERROR
         cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
-        # 调用CRM产品预约接口
-        data = {
-            'authKey': AUTH_KEY,
-            'custid': cust_id,
-            'fundname': product_name,
-            'phone': phone
-        }
-        data = urllib.parse.urlencode(data).encode()
-        with urllib.request.urlopen(URL_PROD_OFFER, data) as f:
-            crm_msg = f.read().decode()
-        # crm = json.loads(crm_msg)
-        # return ''
+        custom_order = dbs.query(CustomerOrderSeq)\
+            .filter(CustomerOrderSeq.cust_id == wechat_id)\
+            .filter(CustomerOrderSeq.prod_id == pro_id).first()
+        if custom_order:
+            error_msg = '该产品已被预约'
+            error_code = CODE_ORDER
+        else:
+            custom_order = CustomerOrderSeq()
+            custom_order.cust_id = wechat_id
+            custom_order.prod_id = pro_id
+            custom_order.phone = phone
+            custom_order.create_user = create_user
+            custom_order.create_time = date_now()
+            custom_order.state = STATE_VALID
+            dbs.add(custom_order)
+            dbs.flush()
+
+            # 调用CRM产品预约接口
+            data = {
+                'authKey': AUTH_KEY,
+                'custid': cust_id,
+                'fundname': product_name,
+                'phone': phone
+            }
+            data = urllib.parse.urlencode(data).encode()
+            with urllib.request.urlopen(URL_PROD_OFFER, data) as f:
+                crm_msg = f.read().decode()
+        return error_msg, error_code
 
     @staticmethod
     def search_coll_product(dbs, dbms, wechat_id, page_no):
