@@ -142,8 +142,13 @@ class CustomerService:
         """
         error_code = CODE_ERROR
         error_msg = ''
-        cust = dbs.query(CustomerInfo).filter(CustomerInfo.id == wechat_id).first()
-        if not cust:
+        try:
+            cust = dbs.query(CustomerInfo).filter(CustomerInfo.id == wechat_id).first()
+            if not cust:
+                error_code = CODE_BINDING
+                error_msg = '该账户未绑定'
+        except Exception as e:
             error_code = CODE_BINDING
             error_msg = '该账户未绑定'
+            HyLog.log_error(e)
         return error_msg, error_code
