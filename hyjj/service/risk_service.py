@@ -93,8 +93,8 @@ class RiskService:
         risk_level = '01'
         # customer_risk = dbs.query(CustomerRisk.risk_level)\
         #     .filter(CustomerRisk.cust_id == wechat_id).order_by(CustomerRisk.create_time.desc()).first()
-        if custom:
-            risk_level = custom.risk_level if custom else ''
+        if custom.risk_level:
+            risk_level = custom.risk_level if custom.risk_level else ''
         else:
             error_code = CODE_NO_RISK
             error_msg = '该用户未进行风险评测！'
