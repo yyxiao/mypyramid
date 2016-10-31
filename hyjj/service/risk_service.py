@@ -45,7 +45,7 @@ class RiskService:
         return ans_list
 
     def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, create_user='xyy'):
-        cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
+        custom = dbs.query(CustomerInfo).filter(CustomerInfo.id == wechat_id).first()
         risk_answer_dict = eval(risk_answers)
         score = 0  # 评测得分
         risk_type = RISK_FIRST
@@ -77,8 +77,10 @@ class RiskService:
             customer_risk.create_time = date_now()
             dbs.add(customer_risk)
             dbs.flush()
+            custom.risk_level = risk_type
+            dbs.update(custom)
             # 调用接口保存用户证件类型、号码
-            self.__risk_eval(cust_id, type, cert_type, cert_no, risk_type, risk_answers, score)
+            self.__risk_eval(custom.cust_id, type, cert_type, cert_no, risk_type, risk_answers, score)
         except Exception as e:
             HyLog.log_error(e)
         return risk_type
@@ -86,19 +88,19 @@ class RiskService:
     @staticmethod
     def search_customer_risk_level(dbs, wechat_id):
         error_msg = ''
-        indiinst_flag = dbs.query(CustomerInfo.indiinst_flag).filter(CustomerInfo.id == wechat_id).first()
+        custom = dbs.query(CustomerInfo).filter(CustomerInfo.id == wechat_id).first()
         error_code = CODE_ERROR
         risk_level = '01'
-        customer_risk = dbs.query(CustomerRisk.risk_level)\
-            .filter(CustomerRisk.cust_id == wechat_id).order_by(CustomerRisk.create_time.desc()).first()
-        if customer_risk:
-            risk_level = customer_risk[0] if customer_risk[0] else ''
+        # customer_risk = dbs.query(CustomerRisk.risk_level)\
+        #     .filter(CustomerRisk.cust_id == wechat_id).order_by(CustomerRisk.create_time.desc()).first()
+        if custom:
+            risk_level = custom.risk_level if custom else ''
         else:
             error_code = CODE_NO_RISK
             error_msg = '该用户未进行风险评测！'
         risk_msg = RISK_MSG[risk_level]
         risk_type_level = RISK_TYPE_LEVEL[risk_level]
-        return error_msg, error_code, risk_level, risk_msg, risk_type_level, indiinst_flag
+        return error_msg, error_code, risk_level, risk_msg, risk_type_level, custom.indiinst_flag
 
     @staticmethod
     def __search_answer_score(dbs, question_id, selection_no):
