@@ -76,9 +76,9 @@ class RiskService:
             customer_risk.create_user = create_user
             customer_risk.create_time = date_now()
             dbs.add(customer_risk)
-            dbs.flush()
             custom.risk_level = risk_type
-            dbs.update(custom)
+            dbs.merge(custom)
+            dbs.flush()
             # 调用接口保存用户证件类型、号码
             self.__risk_eval(custom.cust_id, type, cert_type, cert_no, risk_type, risk_answers, score)
         except Exception as e:
