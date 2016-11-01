@@ -51,6 +51,7 @@ class ProductService:
     def search_products(dbs, wechat_id, page_no, search_key, risk_level):
         page_offset = int(page_no) * 10
         pro_list = []
+        # create sqlalchemy sub query
         nav1 = dbs.query(CmsProductNav.productId, CmsProductNav.nav, CmsProductNav.navTime, CmsProductNav.accnav)\
             .order_by(CmsProductNav.productId.desc(), CmsProductNav.navTime.desc()).subquery()
         nav_all = dbs.query(nav1).group_by(nav1.c.productId).subquery()
@@ -62,7 +63,7 @@ class ProductService:
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
             .filter(CmsProduct.platFormCode.like('%FUND%'))
-
+        # count pros_num and filter_num from cmsProduct
         count_pros = dbs.query(func.count(CmsProduct.id))\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
