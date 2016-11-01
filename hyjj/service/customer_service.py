@@ -62,7 +62,7 @@ class CustomerService:
             return ''
 
     @staticmethod
-    def book_product_by_id(dbs, wechat_id, product_name, phone, pro_id, create_user='xyy'):
+    def book_product_by_id(dbs, wechat_id, product_name, phone, pro_id, crm_path, create_user='xyy'):
         error_msg = ''
         error_code = CODE_ERROR
         cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
@@ -91,7 +91,7 @@ class CustomerService:
                 'phone': phone
             }
             data = urllib.parse.urlencode(data).encode()
-            with urllib.request.urlopen(URL_PROD_OFFER, data) as f:
+            with urllib.request.urlopen(crm_path + URL_PROD_OFFER, data) as f:
                 crm_msg = f.read().decode()
         return error_msg, error_code
 
@@ -138,14 +138,14 @@ class CustomerService:
         return coll_prod_list
 
     @staticmethod
-    def count_bind(phone, realname):
+    def count_bind(phone, realname, crm_path):
         data = {
             'authKey': AUTH_KEY,
             'phone': phone,
             'realname': realname
         }
         data = urllib.parse.urlencode(data).encode()
-        with urllib.request.urlopen(URL_COUNT_BIND, data) as f:
+        with urllib.request.urlopen(crm_path + URL_COUNT_BIND, data) as f:
             crm_msg = f.read().decode()
         crm = json.loads(crm_msg)
         return crm

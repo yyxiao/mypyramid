@@ -47,7 +47,7 @@ RISK_TYPE_LEVEL = {'01': '低风险',
 
 AUTH_KEY = 'E10ADC3949BA59ABBE56E057F20F883E'
 
-URL_COUNT_BIND = 'http://10.12.5.42:8080/hycrm/wechat/countBind'
-URL_RISK_EVAL = 'http://10.12.5.42:8080/hycrm/wechat/riskEval'
-URL_PROD_OFFER = 'http://10.12.5.42:8080/hycrm/wechat/prodOffer'
+URL_COUNT_BIND = 'wechat/countBind'
+URL_RISK_EVAL = 'wechat/riskEval'
+URL_PROD_OFFER = 'wechat/prodOffer'
 
