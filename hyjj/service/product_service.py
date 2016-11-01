@@ -60,20 +60,23 @@ class ProductService:
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
+            .filter(CmsProduct.platFormCode.like('%FUND%'))
 
         count_pros = dbs.query(func.count(CmsProduct.id))\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0').scalar()
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
+            .filter(CmsProduct.platFormCode.like('%FUND%')).scalar()
         count_user_pros = dbs.query(func.count(CmsProduct.id)) \
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId) \
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')\
+            .filter(CmsProduct.platFormCode.like('%FUND%'))
         if risk_level == RISK_FIRST:
             pros = pros.filter(CmsProduct.riskLv == '1')
             count_user_pros = count_user_pros.filter(CmsProduct.riskLv == '1')
         elif risk_level == RISK_SECOND:
             pros = pros.filter(CmsProduct.riskLv <= '3')
-            count_user_pros = count_user_pros.filter(CmsProduct.riskLv == '1')
+            count_user_pros = count_user_pros.filter(CmsProduct.riskLv <= '3')
         if search_key:
             pros = pros.filter(or_(CmsProduct.fullName.like('%' + search_key + '%'),
                                    CmsProduct.name.like('%' + search_key + '%')))
