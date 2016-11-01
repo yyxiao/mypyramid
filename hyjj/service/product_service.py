@@ -5,7 +5,7 @@ __author__ = xyy
 __mtime__ = 2016/10/14
 """
 
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from ..models.product_model import CmsProductNav, CmsProduct
 from ..models.model import CustomerCollProd
 from ..common.constant import NAV_TYPE_1, NAV_TYPE_2, NAV_TYPE_3, NAV_TYPE_4, PAGE_SIZE, \
@@ -60,15 +60,27 @@ class ProductService:
                          CmsProduct.productStartDate, CmsProduct.deadlineType,
                          nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.hotStatus)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
-            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0').filter(CmsProduct.type != 'GD')
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
+
+        count_pros = dbs.query(func.count(CmsProduct.id))\
+            .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0').scalar()
+        count_user_pros = dbs.query(func.count(CmsProduct.id)) \
+            .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId) \
+            .filter(CmsProduct.useStat == '1').filter(CmsProduct.isDeleted == '0')
         if risk_level == RISK_FIRST:
             pros = pros.filter(CmsProduct.riskLv == '1')
+            count_user_pros = count_user_pros.filter(CmsProduct.riskLv == '1')
         elif risk_level == RISK_SECOND:
             pros = pros.filter(CmsProduct.riskLv <= '3')
+            count_user_pros = count_user_pros.filter(CmsProduct.riskLv == '1')
         if search_key:
             pros = pros.filter(or_(CmsProduct.fullName.like('%' + search_key + '%'),
                                    CmsProduct.name.like('%' + search_key + '%')))
+            count_user_pros = count_user_pros.filter(or_(CmsProduct.fullName.like('%' + search_key + '%'),
+                                                         CmsProduct.name.like('%' + search_key + '%')))
         pros = pros.order_by(CmsProduct.id.desc()).offset(page_offset).limit(PAGE_SIZE)
+        count_user_pros = count_user_pros.scalar()
         for pro in pros:
             nav_dict = dict()
             nav_dict['id'] = pro[0] if pro[0] else ''
@@ -92,7 +104,7 @@ class ProductService:
             nav_dict['hotStatus'] = pro[17] if pro[17] else ''
             pro_list.append(nav_dict)
         # HyLog.log_info(pro_list)
-        return pro_list
+        return pro_list, count_pros, count_user_pros
 
     @staticmethod
     def search_product_info(dbs, dbms, wechat_id, product_id):

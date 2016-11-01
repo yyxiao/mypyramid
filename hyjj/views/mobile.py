@@ -291,7 +291,7 @@ class MobileView(BaseUtil):
             if not error_msg:
                 error_msg, error_code, risk_level, risk_msg, risk_type_level, indiinst_flag = self.riskService.search_customer_risk_level(
                     dbs, wechat_id)
-                pro_list = self.productService.search_products(dbms, wechat_id, page_no, search_key, risk_level)
+                pro_list, count_pros, count_user_pros = self.productService.search_products(dbms, wechat_id, page_no, search_key, risk_level)
         if error_msg:
             json_a = {
                 'returnCode': error_code,
@@ -301,7 +301,9 @@ class MobileView(BaseUtil):
             json_a = {
                 'returnCode': constant.CODE_SUCCESS,
                 'returnMsg': '',
-                'productList': pro_list
+                'productList': pro_list,
+                'allNum': count_pros if count_pros else 0,
+                'filterNum': count_user_pros if count_user_pros else 0
             }
         self.hyLog.log_in(self.request.client_addr,
                           ('productList failed ' + error_msg if error_msg else 'productList success'),
