@@ -82,8 +82,9 @@ class MobileView(BaseUtil):
         if not error_msg:
             redis_host = self.request.registry.settings['redis.sessions.host']
             crm_path = self.request.registry.settings['crm_path']
+            auth_key = self.request.registry.settings['crm_auth_key']
             r = create_redis(redis_host)
-            user_info = self.customerService.count_bind(user_phone, user_name, crm_path)
+            user_info = self.customerService.count_bind(user_phone, user_name, crm_path, auth_key)
             if not user_info:
                 error_msg = 'crm服务连接错误！'
             else:
@@ -175,8 +176,9 @@ class MobileView(BaseUtil):
             error_msg = '对私对公标志不能为空！'
         if not error_msg:
             crm_path = self.request.registry.settings['crm_path']
+            auth_key = self.request.registry.settings['crm_auth_key']
             risk_level = self.riskService.add_risk_assess(dbs, wechat_id, risk_answers,
-                                                          type, cert_type, cert_no, crm_path)
+                                                          type, cert_type, cert_no, crm_path, auth_key)
             error_msg, error_code = self.customerService.search_cust_bind(dbs, wechat_id)
         if error_msg:
             json_a = {
@@ -407,8 +409,9 @@ class MobileView(BaseUtil):
             error_msg = '联系电话不能为空！'
         if not error_msg:
             crm_path = self.request.registry.settings['crm_path']
+            auth_key = self.request.registry.settings['crm_auth_key']
             error_msg, error_code = self.customerService.book_product_by_id(dbs, wechat_id, pro_name, phone, pro_id,
-                                                                            crm_path)
+                                                                            crm_path, auth_key)
         if error_msg:
             json_a = {
                 'returnCode': error_code,

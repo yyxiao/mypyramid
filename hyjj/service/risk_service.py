@@ -8,7 +8,7 @@ import json
 import urllib.request
 from ..models.model import RiskAnswers, RiskQuestion, CustomerRisk, CustomerInfo
 from ..common.constant import STATE_VALID, QUESTION_USER, QUESTION_ORG, CODE_ERROR, CODE_NO_RISK, \
-    RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL, AUTH_KEY, URL_RISK_EVAL
+    RISK_FIRST, RISK_SECOND, RISK_THIRD, RISK_MSG, RISK_TYPE_LEVEL, URL_RISK_EVAL
 from ..common.dateutils import date_now
 from ..common.loguntil import HyLog
 
@@ -44,7 +44,7 @@ class RiskService:
             ans_list.append(ans_dict)
         return ans_list
 
-    def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, crm_path, create_user='xyy'):
+    def add_risk_assess(self, dbs, wechat_id, risk_answers, type, cert_type, cert_no, crm_path, auth_key, create_user='xyy'):
         custom = dbs.query(CustomerInfo).filter(CustomerInfo.id == wechat_id).first()
         risk_answer_dict = eval(risk_answers)
         score = 0  # 评测得分
@@ -80,7 +80,7 @@ class RiskService:
             dbs.merge(custom)
             dbs.flush()
             # 调用接口保存用户证件类型、号码
-            self.__risk_eval(custom.cust_id, type, cert_type, cert_no, risk_type, risk_answers, score, crm_path)
+            self.__risk_eval(custom.cust_id, type, cert_type, cert_no, risk_type, risk_answers, score, crm_path, auth_key)
         except Exception as e:
             HyLog.log_error(e)
         return risk_type
@@ -113,9 +113,9 @@ class RiskService:
         return ans[0]
 
     @staticmethod
-    def __risk_eval(custid, indiinstflag, certtype, certno, risklevel, riskAnswer, riskScore, crm_path):
+    def __risk_eval(custid, indiinstflag, certtype, certno, risklevel, riskAnswer, riskScore, crm_path, auth_key):
         data = {
-            'authKey': AUTH_KEY,
+            'authKey': auth_key,
             'custid': custid,
             'indiinstflag': indiinstflag,
             'certtype': certtype,

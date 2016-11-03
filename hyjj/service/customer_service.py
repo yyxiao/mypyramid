@@ -9,7 +9,7 @@ import datetime
 import json
 import urllib.request
 from ..models.model import CustomerInfo, CustomerCollProd, CustomerOrderSeq
-from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, AUTH_KEY, URL_PROD_OFFER, \
+from ..common.constant import STATE_INVALID, STATE_VALID, PAGE_SIZE, URL_COUNT_BIND, URL_PROD_OFFER, \
     CODE_BINDING, CODE_ERROR, CODE_ORDER
 from ..common.dateutils import date_now, date_pattern1, date_pattern2
 from ..common.loguntil import HyLog
@@ -62,7 +62,7 @@ class CustomerService:
             return ''
 
     @staticmethod
-    def book_product_by_id(dbs, wechat_id, product_name, phone, pro_id, crm_path, create_user='xyy'):
+    def book_product_by_id(dbs, wechat_id, product_name, phone, pro_id, crm_path, auth_key, create_user='xyy'):
         error_msg = ''
         error_code = CODE_ERROR
         cust_id = dbs.query(CustomerInfo.cust_id).filter(CustomerInfo.id == wechat_id).first()
@@ -85,8 +85,8 @@ class CustomerService:
 
             # 调用CRM产品预约接口
             data = {
-                'authKey': AUTH_KEY,
-                'custid': cust_id,
+                'authKey': auth_key,
+                'custid': cust_id[0],
                 'fundname': product_name,
                 'phone': phone
             }
@@ -138,9 +138,9 @@ class CustomerService:
         return coll_prod_list
 
     @staticmethod
-    def count_bind(phone, realname, crm_path):
+    def count_bind(phone, realname, crm_path, auth_key):
         data = {
-            'authKey': AUTH_KEY,
+            'authKey': auth_key,
             'phone': phone,
             'realname': realname
         }
