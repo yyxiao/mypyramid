@@ -120,7 +120,7 @@ class ProductService:
                          CmsProduct.supplierName, CmsProduct.productScale, CmsProduct.productStat, CmsProduct.hyComment,
                          CmsProduct.productStartDate, CmsProduct.deadlineType, CmsProduct.manager, CmsProduct.riskLv,
                          CmsProduct.hotStatus, CmsProduct.publishStartDate,
-                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav)\
+                         nav_all.c.nav, nav_all.c.navTime, nav_all.c.accnav, CmsProduct.deadlineDesc)\
             .outerjoin(nav_all, CmsProduct.id == nav_all.c.productId)\
             .filter(CmsProduct.id == product_id).filter(CmsProduct.isDeleted == '0').first()
         cust_pro = dbs.query(CustomerCollProd)\
@@ -150,6 +150,7 @@ class ProductService:
             nav_dict['navTime'] = datetime.datetime.strptime(pro[19], date_pattern2).strftime(date_pattern1) \
                 if pro[19] else ''
             nav_dict['accnav'] = pro[20] if pro[20] else ''
+            nav_dict['deadlineDesc'] = pro[21] if pro[21] else ''
         HyLog.log_info("[search_product_info]:" + str(nav_dict))
         return nav_dict
 
