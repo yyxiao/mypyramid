@@ -9,13 +9,13 @@ from sqlalchemy import (
     TEXT
 )
 
-from .meta import Base, HYJJ_SCHEMA, Other
+from .meta import Base, mypyramid_SCHEMA, Other
 from datetime import datetime
 
 
 class RiskQuestion(Base):
     __tablename__ = 'risk_question'                                                              # 问题表
-    id = Column(INT, Sequence('risk_question_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('risk_question_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     question_type = Column(VARCHAR(1))                   # 类型
     question_name = Column(VARCHAR(300))                # 问题描述
     create_user = Column(VARCHAR(20))                   # 创建人
@@ -25,7 +25,7 @@ class RiskQuestion(Base):
 
 class RiskAnswers(Base):
     __tablename__ = 'risk_answers'                                                              # 答案表
-    id = Column(INT, Sequence('risk_answers_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('risk_answers_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     question_id = Column(INT)                           # 问题id
     answer_name = Column(VARCHAR(100))                  # 答案描述
     selection_no = Column(VARCHAR(2))                      # 选项编号
@@ -36,7 +36,7 @@ class RiskAnswers(Base):
 
 class CustomerRisk(Base):
     __tablename__ = 'customer_risk'                                                             # 客户答卷表
-    id = Column(INT, Sequence('customer_risk_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('customer_risk_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     evaluating_time = Column(DateTime)                  # 评测时间
     cust_answers = Column(VARCHAR(200))                  # 风险题目答案
@@ -52,7 +52,7 @@ class CustomerRisk(Base):
 
 class CustomerInfo(Base):
     __tablename__ = 'customer_info'                                                             # 客户答卷表
-    id = Column(INT, Sequence('customer_info_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('customer_info_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     indiinst_flag = Column(VARCHAR(1))                     # 对私对公标志
     openid = Column(VARCHAR(20))                        # 微信OPENID
@@ -70,7 +70,7 @@ class CustomerInfo(Base):
 
 class CustomerCollProd(Base):
     __tablename__ = 'customer_coll_prod'                # 客户收藏产品表
-    id = Column(INT, Sequence('customer_coll_prod_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('customer_coll_prod_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     prod_id = Column(VARCHAR(20))                       # 产品id
     version = Column(VARCHAR(1))                        # 版本号
@@ -83,7 +83,7 @@ class CustomerCollProd(Base):
 
 class CustomerOrderSeq(Base):
     __tablename__ = 'customer_order_seq'                # 客户预约流水表
-    id = Column(INT, Sequence('customer_order_seq_id_seq', schema=HYJJ_SCHEMA), primary_key=True)  # 主键ID
+    id = Column(INT, Sequence('customer_order_seq_id_seq', schema=mypyramid_SCHEMA), primary_key=True)  # 主键ID
     cust_id = Column(VARCHAR(20))                       # 客户id
     prod_id = Column(VARCHAR(20))                       # 产品id
     phone = Column(VARCHAR(20))                         # 预约电话
@@ -97,7 +97,7 @@ class CustomerOrderSeq(Base):
 
 class CustomerSms(Base):
     __tablename__ = 'customer_sms'                                                              # 发送短信表
-    id = Column(INT, Sequence('customer_sms_id_seq', schema=HYJJ_SCHEMA), primary_key=True)    # 主键ID
+    id = Column(INT, Sequence('customer_sms_id_seq', schema=mypyramid_SCHEMA), primary_key=True)    # 主键ID
     sms_content = Column(VARCHAR(300))                  # 问题描述
     phone = Column(VARCHAR(11))                         # 手机号码
     create_user = Column(VARCHAR(20))                   # 创建人

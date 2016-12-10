@@ -14,9 +14,9 @@ NAMING_CONVENTION = {
     "pk": "pk_%(table_name)s"
 }
 # 数据库 schema
-HYJJ_SCHEMA = 'public'
+mypyramid_SCHEMA = 'public'
 
-metadata = MetaData(schema=HYJJ_SCHEMA, naming_convention=NAMING_CONVENTION)
+metadata = MetaData(schema=mypyramid_SCHEMA, naming_convention=NAMING_CONVENTION)
 Base = declarative_base(metadata=metadata)
 
 other_metadata = MetaData(naming_convention=NAMING_CONVENTION)

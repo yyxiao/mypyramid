@@ -1,4 +1,4 @@
-hyjj README
+mypyramid README
 ==================
 
 Getting Started
@@ -10,9 +10,9 @@ Getting Started
 
 - complete first.
 
-- you can find initialize_hyjj_db in your python folder
+- you can find initialize_mypyramid_db in your python folder
 
-- $VENV/bin/initialize_hyjj_db development.ini
+- $VENV/bin/initialize_mypyramid_db development.ini
 
 - $VENV/bin/pserve development.ini
 

@@ -26,9 +26,9 @@ tests_require = [
     'pytest-cov',
     ]
 
-setup(name='hyjj',
+setup(name='mypyramid',
       version='0.0',
-      description='hyjj',
+      description='mypyramid',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Programming Language :: Python",
@@ -49,8 +49,8 @@ setup(name='hyjj',
       install_requires=requires,
       entry_points="""\
       [paste.app_factory]
-      main = hyjj:main
+      main = mypyramid:main
       [console_scripts]
-      initialize_hyjj_db = hyjj.scripts.initializedb:main
+      initialize_mypyramid_db = mypyramid.scripts.initializedb:main
       """,
       )
